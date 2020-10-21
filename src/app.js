@@ -10,6 +10,7 @@
 // TODO: Replace the code below with your own game logic.
 
 import { Deck } from './Deck.js'
+import { PlayingCard } from './PlayingCard.js'
 
 try {
   // Create 52 playing cards and...
@@ -22,26 +23,49 @@ try {
   // (`value + playingCard` implicitly calls PlayingCard#valueOf to get
   //  the primitive value of the current PlayingCard object.)
   
-//test vad som händer när array ("kortlek") är tom 
+//test med kända kort
 
   const testArray = new Array(1, 2, 3, 4, 5, 6)
 
+  if (testArray.Length < 0) {
+    console.log('error')
+  }
+
+
   const hej1 = testArray.splice(0, 3)
   console.log(hej1)
-
+  if (testArray.Length < 0) {
+    console.log('error')
+  }
   const hej2 = testArray.splice(0, 3)
   console.log(hej2)
-
-  const hej3 = testArray.splice(0, 3) // om arrayn är tom returneras tom array
+  /*if (testArray.length === 0) { // om draghögen är tom!
+    process.exitCode = 27
+    throw new Error('Draghögen är tom!')
+  }*/
+  const hej3 = testArray.splice(0, 3) // om arrayn är tom returneras tom array (om inte error testar innan)
   console.log(hej3)
 
- //En spelomgång med en spelare, returnerar player och dealers kort (finns det dubbletter med denna metod?)
+
+ //kod om draghögen är tom:
+  if (playingCards.length === 0) { // om draghögen är tom!
+  process.exitCode = 27
+  throw new Error('Draghögen är tom!')
+}
+
+
+
+ //En spelomgång med en spelare, returnerar player och dealers kort
 
   //Player
 
-  const hand = playingCards.splice(0, 3)
+  var hand = playingCards.splice(0, 3)
 
   const valuePlayer = hand.reduce((value, playingCard) => value + playingCard, 0)
+
+  /*for (let i = 0; valuePlayer < 18; i++) {
+    hand = playingCards.splice(0, 3) + playingCards.splice(3+i)
+  }*/
   console.log(` Player: ${hand.join(' ')} (${valuePlayer})`)
 
   //Dealer
@@ -58,7 +82,7 @@ try {
 }
 
 /*
-try {
+ try{
   // Create 52 playing cards and...
   
   const playingCards = Deck.create()
