@@ -56,10 +56,4 @@ export class Deck {
 
     return playingCards
   }
-
-  static used () { //Använda kort
-    const usedCards = new Array()
-
-    return usedCards
-  }
 }

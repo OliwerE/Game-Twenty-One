@@ -3,7 +3,7 @@
  *
  * @author Johan Leitet <johan.leitet@lnu.se>
  * @author Mats Loock <mats.loock@lnu.se>
- * @author // TODO: YOUR NAME <YOUR EMAIL>
+ * @author Oliwer Ellréus <oe222ez@student.lnu.se>
  * @version 1.0.0
  */
 
@@ -13,97 +13,68 @@ import { Deck } from './Deck.js'
 import { PlayingCard } from './PlayingCard.js'
 
 try {
-  // Create 52 playing cards and...
-  const playingCards = Deck.create()
-  // ...shuffle them. 
-  Deck.shuffle(playingCards)
+  //ta emot antal spelare (från start)
 
-  // Draw three playing cards, view the remaining playing cards, the drawn playing cards and
-  // then calculate the value of them.
-  // (`value + playingCard` implicitly calls PlayingCard#valueOf to get
-  //  the primitive value of the current PlayingCard object.)
-  
-//test med kända kort
-
-  const testArray = new Array(1, 2, 3, 4, 5, 6)
-
-  if (testArray.Length < 0) {
-    console.log('error')
+  const numberOfPlayers = process.argv[2]
+ 
+  if (process.argv[2] === undefined) { //om användaren inte anger antal spelare sätts antalet automatiskt till 1.
+    process.argv.push(1)
   }
 
 
-  const hej1 = testArray.splice(0, 3)
-  console.log(hej1)
-  if (testArray.Length < 0) {
-    console.log('error')
-  }
-  const hej2 = testArray.splice(0, 3)
-  console.log(hej2)
-  /*if (testArray.length === 0) { // om draghögen är tom!
-    process.exitCode = 27
-    throw new Error('Draghögen är tom!')
-  }*/
-  const hej3 = testArray.splice(0, 3) // om arrayn är tom returneras tom array (om inte error testar innan)
-  console.log(hej3)
+  //returnerar antal spelare i omgången till konsoll:
 
+  console.log(`Denna spelomgång har såhär många spelare: ${numberOfPlayers}`)
 
- //kod om draghögen är tom:
-  if (playingCards.length === 0) { // om draghögen är tom!
-  process.exitCode = 27
-  throw new Error('Draghögen är tom!')
-}
+  // game logic:
 
+  //slänghög
 
+  const used = new Array() // använd: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/concat
 
- //En spelomgång med en spelare, returnerar player och dealers kort
-
-  //Player
-
-  var hand = playingCards.splice(0, 3)
-
-  const valuePlayer = hand.reduce((value, playingCard) => value + playingCard, 0)
-
-  /*for (let i = 0; valuePlayer < 18; i++) {
-    hand = playingCards.splice(0, 3) + playingCards.splice(3+i)
-  }*/
-  console.log(` Player: ${hand.join(' ')} (${valuePlayer})`)
-
-  //Dealer
-  const dealer = playingCards.splice(0, 3)
-
-  const valueDealer = dealer.reduce((value, playingCard) => value + playingCard, 0)
-  console.log(` Dealer: ${dealer.join(' ')} (${valueDealer})`)
-
-  //Visar använda kort
-  console.log('debug använda kort: ', Deck.used())
-
-} catch (e) {
-  console.error(e.message)
-}
-
-/*
- try{
   // Create 52 playing cards and...
-  
   const playingCards = Deck.create()
-  console.log(playingCards.join(', '), '\n')
-
-  // ...shuffle them.
   
+  // ...shuffle cards 
   Deck.shuffle(playingCards)
-  console.log(playingCards.join(', '), '\n')
 
-  // Draw three playing cards, view the remaining playing cards, the drawn playing cards and
-  // then calculate the value of them.
-  // (`value + playingCard` implicitly calls PlayingCard#valueOf to get
-  //  the primitive value of the current PlayingCard object.)
-  const hand = playingCards.splice(0, 3)
 
-  console.log(playingCards.join(', '))
+  // Players: first card
 
-  const value = hand.reduce((value, playingCard) => value + playingCard, 0)
-  console.log(`${hand.join(' ')} (${value})`)
+  const playersObject = {} // sparar spelarnas kort
+
+  for (let i = 1; i <= process.argv[2]; i++ ) { // ger alla spelare ett första kort
+    if (playingCards.length === 0) { // om draghögen är tom!
+      process.exitCode = 27
+      throw new Error('Draghögen är tom!')
+      }else{
+    const hand = playingCards.splice(0, 1)
+    const valuePlayer = hand.reduce((value, playingCard) => value + playingCard, 0)
+    playersObject[`Player #${i}:`] = hand.join(' ') + `(${valuePlayer})` // lägger till spelarens kort och summa i ett objekt, flytta summan till en array istället??
+    //console.log(` Player #${i}: ${hand.join(' ')} (${valuePlayer})`)  //Denna lösning sparar inte spelarnas kort!
+      }
+  }
+
+  console.log(playersObject) // skriver ut spelarnas kort i ett objekt
+
+  // Dealer:
+
+
+
+console.log('===========================')
+  
+  // vem som har högst summa (vinnare)
+
+const winner = function (valuePlayer, valueDealer) { // ta med 21 gränsen!
+if (valuePlayer > valueDealer) {
+  return 'Player wins!'
+}else if (valueDealer > valuePlayer) {
+  return 'Dealer wins!'
+} else {
+    return 'wuut :O'
+}
+}
+console.log('Vinnaren är: ', winner(valuePlayer, valueDealer))
 } catch (e) {
   console.error(e.message)
 }
-*/
