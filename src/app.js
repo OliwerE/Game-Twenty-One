@@ -11,15 +11,12 @@
 
 import { Deck } from './Deck.js'
 import { PlayingCard } from './PlayingCard.js'
-import { Players } from './Players.js'
+import { CreatePlayer } from './CreatePlayer.js'
+import { CreateGame } from './Game.js'
 
 try {
-  const playingCards = Deck.create()
-
-    // ...shuffle cards 
-    //Deck.shuffle(playingCards) //använd sen
-
-  const createPlayer = new Players() //skapar EN ny spelare
+  /*
+  const createPlayer = new CreatePlayer() //skapar EN ny spelare
 
   createPlayer.playerName = 'Player #1:' //sätter namnet på spelaren
 
@@ -33,13 +30,8 @@ try {
     sum = sum + createPlayer.hand[i].rank
   }
 
-  console.log('summan är ', sum)
-
-
-
-  
- //visar spelarens kort i en tabell
-  console.table(createPlayer.hand)
+  //visar spelarens kort i en tabell
+  //console.table(createPlayer.hand)
 
 
   
@@ -48,6 +40,13 @@ try {
 
   //skriver ut en text med spelarens data
   console.log(createPlayer.toString())
+  */
+  const theGame = new CreateGame()
+  theGame.gameSetup()
+  console.log(theGame.toString())
+
+
+
 
 } catch (e) {
   console.error(e.message)

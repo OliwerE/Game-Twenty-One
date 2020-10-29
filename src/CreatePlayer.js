@@ -5,9 +5,9 @@
  * @version 1.0.0
  */
 
-export class Players {
-    constructor (name, hand, totVal) {
-    this.playerName = name 
+export class CreatePlayer {
+    constructor (playerName, hand, totVal) {
+    this.playerName = playerName
     this.hand = {} //spelarens kort 
     this.totVal = 0
     }
