@@ -15,7 +15,7 @@ export class Players {
       this.totVal = sum
     }
     toString () {
-      return `spelaren heter: ${this.playerName}, spelaren har följande kort: ${this.hand} och summan är: ${this.totVal} `
+      return this.playerName + ' ' + this.hand + ' ' + `(${this.totVal})`
     }
 
 }

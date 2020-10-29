@@ -21,7 +21,7 @@ try {
 
   const createPlayer = new Players() //skapar EN ny spelare
 
-  createPlayer.playerName = 'Player 1' //sätter namnet på spelaren
+  createPlayer.playerName = 'Player #1:' //sätter namnet på spelaren
 
   createPlayer.hand = playingCards.splice(0, 3) // ger spelaren tre kort (ska egentligen börja med 1!!)
 
@@ -45,10 +45,6 @@ try {
   
   //settern i player lägger till sum i spelarens totVal
   createPlayer.setSum = sum
-
-
-  //skriver ut kortens totala summa
-  console.log(createPlayer.totVal)
 
   //skriver ut en text med spelarens data
   console.log(createPlayer.toString())
