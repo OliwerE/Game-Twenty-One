@@ -23,15 +23,28 @@ export class CreateGame {
     
     // return this.deck  //debug, visar hela kortleken
 
-    //create players
+    //create players + gives first card
     const numOfPlayers = 2 //ta bort hårdkodning!
 
     for (let i = 0; i <= numOfPlayers - 1; i++) { // skapar spelarna (ej dealer)
+      
+      // creates player
       let createPlayerNumber = i + 1
-      this.players.push(new CreatePlayer('Player #' + createPlayerNumber + ': '))
+      let createPlayerName = 'Player #' + createPlayerNumber + ': '
+      this.players.push(new CreatePlayer(createPlayerName))
+      
+      //gives all players three cards
+      this.players[i].hand = this.deck.splice(0, 3) // ger spelaren tre kort (ska egentligen börja med 1!!)
+      
+
+      //sum cards
+      let handLenght = this.players[i].hand.length
+      for (let a = 0; a <= handLenght - 1 ; a++) { // Summerar de första korten
+        this.players[i].totVal = this.players[i].totVal + this.players[i].hand[a].rank
+      }
     }
 
-    console.table(this.players) // debug listar spelarna!!
+    console.table(this.players) // debug listar spelarna
 
     // gives all players one card:
 
