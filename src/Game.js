@@ -45,6 +45,7 @@ export class CreateGame {
         this.players[i].totVal = this.players[i].totVal + this.players[i].hand[a].rank
       }
     }
+    console.log('lista på spelarna och deras innehåll') 
     console.table(this.players) // debug listar spelarna
 
     //console.table(this.players[0]) //spelare 1
@@ -62,7 +63,7 @@ export class CreateGame {
     tempHand = []
     this.players[0].hand = fixedHand
     
-    console.log('här får spelaren det första (tot andra) kortet för omgången') 
+    console.log('här får spelaren det första (tot andra) kortet för omgången (summeras ej i totVal!)') 
     console.table(this.players)
     
     //visar temphand ska vara tom
@@ -77,13 +78,55 @@ export class CreateGame {
     }
     this.players[0].totVal = newPlayerTotVal
 
-    console.log(this.players[0].totVal)
+    //console.log(this.players[0].totVal)
 
     console.log('kolla att summan fungerar')
     console.table(this.players) // kontrollera att summan stämmer för player1
     //slut det andra startkortet
 
+    // spelarens val
 
+    if (this.players[0].totVal === 21) {
+      console.log('Player win!') // om vinst slutar rundan här!
+    }
+
+
+    for (let i = 0; this.players[0].totVal <= 17; i++) { //när spelarens summa är mindre än 17
+      console.log('jag är lika eller mindre än 17') //i detta fall ta ett nytt kort!
+        
+      //lägger till kort i spelarens hand
+      this.players[0].hand = this.players[0].hand.concat(this.deck.splice(0, 1))
+        
+      //Summerar korten (upprepning...)
+
+      let handLenght2 = this.players[0].hand.length //returns 2
+      console.log('handens längd2: ', handLenght2)
+      let newPlayerTotVal2 = 0
+      for (let a = 0; a <= handLenght2 - 1 ; a++) { // summerar korten i handen
+        newPlayerTotVal2 = newPlayerTotVal2 + this.players[0].hand[a].rank
+      }
+      this.players[0].totVal = newPlayerTotVal2
+
+      //debug skriver ut
+      //this.players[0].totVal = 18 //test
+      console.table('nya totVal:')
+      console.table(this.players)
+    }
+
+    if (this.players[0].totVal === 21) { //UPPREPAD KOD!!
+      console.log('Player win!')
+    } else if (this.players[0].totVal < 21) {
+      console.log('GIVENS TUR!')
+    } else if (this.players[0].totVal > 21) {
+      console.log('Dealer Win!')
+    }
+    
+    
+    console.log('program temp slutar')
+
+    //slut spelarens val
+
+    //console.log(this.players) //debug visar spelarna
 
   }
   /*toString () {
