@@ -21,12 +21,12 @@ export class CreateGame {
   gameSetup () {
     this.deck = Deck.create() //skapar kortleken
     // ...shuffle cards 
-    //Deck.shuffle(this.deck) //använd sen
+    Deck.shuffle(this.deck) //använd sen
     
     // return this.deck  //debug, visar hela kortleken
 
     //create players + gives first card
-    this.numberOfPlayers = 2 //ta bort hårdkodning!
+    this.numberOfPlayers = 3 //ta bort hårdkodning!
     const numOfPlayers = this.numberOfPlayers
 
     // creates dealer
@@ -58,14 +58,93 @@ export class CreateGame {
     var playerNumber = playerId + 1
     //dealern förbereds
     console.log('-------------------')
-    console.table(this.dealer)
+    //console.table(this.dealer)
     console.log('dealern börjar spela för spelare nr: ', playerNumber)
 
+    //något stämmer inte med dealern!
     //dealer börjar spela (känner inte till spelarens kort!)
 
+    //ger dealern ett kort
+    this.dealer[0].hand = this.deck.splice(0, 1)
+    console.table(this.dealer)
+
+    //summerar dealerns kort
+
+    //sum cards
+    let dealerHandLength = this.players[playerId].hand.length //returns 2
+    //console.log('handens längd2: ', handLenght2) //debug
+    let newDealerTotVal = 0
+    console.log(this.dealer[0].hand[0].rank)
+    for (let a = 0; a <= dealerHandLength - 1 ; a++) { // summerar korten i handen
+      newDealerTotVal = newDealerTotVal + this.dealer[0].hand[0].rank
+    }
+    this.dealer[0].totVal = dealerHandLength
+
+    console.log('dealerns kort summerade')
+    console.table(this.dealer)
+    console.log(this.dealer[0].hand)
+
+    //delarn fortsätter spela
+
+    for (let i = 0; this.dealer[0].totVal <= 17; i++) { //när spelarens summa är mindre än 17
+      console.log('Dealer yar ett nytt kort', i + 1) // debug
+        
+      //lägger till kort i spelarens hand
+      this.dealer[0].hand = this.dealer[0].hand.concat(this.deck.splice(0, 1))
+        
+      //Summerar korten (upprepning...)
+
+      let handLenght2 = this.dealer[0].hand.length //returns 2
+      //console.log('handens längd2: ', handLenght2) //debug
+      let newPlayerTotVal2 = 0
+      for (let a = 0; a <= handLenght2 - 1 ; a++) { // summerar korten i handen
+        newPlayerTotVal2 = newPlayerTotVal2 + this.dealer[0].hand[a].rank
+      }
+      this.dealer[0].totVal = newPlayerTotVal2
+
+      //debug skriver ut
+      //this.players[0].totVal = 18 //test
+      //console.table('nya totVal:') //debug
+      //console.table(this.players) //debug
+    }
+
+    console.table(this.dealer) //debug
+    console.log(this.dealer[0].hand)//dealerns hand
+
+    //dealern räknar ut vem som vann:
+
+    if (this.dealer[0].totVal > 21) {
+      console.log('dealer Lost! Player Won!')
+    } else if (this.dealer[0].totVal > this.player[0].totVal) { //player index hårdkodat importera [i] !!
+      console.log('dealer won! Player Lost!')
+    } else if (this.dealer[0].totVal < this.player[0].totVal) {
+      console.log('player won! Dealer lost!')
+    } else {
+      console.log('något kanske är fel! kolla upp startDealer metod!')
+    }
 
 
+    //lämna till slänghögen
+/*
+    console.log('dealern ger sina kort till slänghögen!')
+    const numberOfDealerCards = this.dealer[0].hand.length - 1
+    console.log('antalet kort dealern har: ', numberOfDealerCards)
+    this.deckUsed = this.dealer[0].hand.splice(0, numberOfDealerCards)
+    this.deckUsed = this.dealer[0].hand.concat(this.deck.splice(0, 0))
 
+    console.log('vad som finns i slänghögen')
+    console.log(this.deckUsed)
+    
+    //dealerns hand ska nu vara tom
+    console.log('dealerns hand ska nu vara tom:')
+    console.log(this.dealer[0].hand)//dealerns hand
+*/
+    this.dealer[0].hand = []
+    console.log('dealerns hand ska nu vara tom:')
+    console.log(this.dealer[0].hand)//dealerns hand
+
+
+    console.log('här slutar dealern!')
   }
   gameRound (playerIndex) { //spelar med en spelare
     var playerId = playerIndex
