@@ -68,7 +68,19 @@ export class CreateGame {
     //visar temphand ska vara tom
     //console.table(tempHand)
 
+    //sum cards, SKAPA EN METOD SOM SUMMERAR KORT!!
+    let handLenght = this.players[0].hand.length //returns 2
+    //console.log('handens längd: ', handLenght)
+    let newPlayerTotVal = 0
+    for (let a = 0; a <= handLenght - 1 ; a++) { // summerar korten i handen
+      newPlayerTotVal = newPlayerTotVal + this.players[0].hand[a].rank
+    }
+    this.players[0].totVal = newPlayerTotVal
 
+    console.log(this.players[0].totVal)
+
+    console.log('kolla att summan fungerar')
+    console.table(this.players) // kontrollera att summan stämmer för player1
     //slut det andra startkortet
 
 
