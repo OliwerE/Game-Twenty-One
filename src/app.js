@@ -21,8 +21,8 @@ try {
 
 
   //debug
-  console.log('---------------------------')
-  console.log(`${theGame.debugPlayers()}`)
+  //console.log('---------------------------')
+  //console.log(`${theGame.debugPlayers()}`)
   //console.log(theGame.debugCardsLeft())
   //console.log(theGame.debugUsedCards())
 
