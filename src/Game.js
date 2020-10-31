@@ -26,13 +26,29 @@ export class CreateGame {
     
     // return this.deck  //debug, visar hela kortleken
 
-    //create players + gives first card
-    this.numberOfPlayers = 2 //ta bort hårdkodning!
+    // Number of Players using argument from user
+
+    console.log(process.argv[2])
+
+    if(process.argv[2] === undefined) { // om spelaren inte ger ett argument
+      this.numberOfPlayers = 3
+      console.log('är undefined')
+    } else if (process.argv[2] > 0 && process.argv[2] < 8) {
+      this.numberOfPlayers = process.argv[2]
+      console.log('mellan 1 och 7')
+    } else if (process.argv[2] == 20 || process.argv[2] == 50) {
+      this.numberOfPlayers = process.argv[2]
+      console.log('input är 20 eller 50')
+    }else {
+      console.log('error') //kasta error här!!
+    }
+
     const numOfPlayers = this.numberOfPlayers
 
     // creates dealer
     this.dealer.push(new CreatePlayer('Dealer'))
-
+    
+    //create players + gives first card
     for (let i = 0; i <= numOfPlayers - 1; i++) { // skapar spelarna och summerar (ej dealer)
 
       // creates player
@@ -228,10 +244,10 @@ export class CreateGame {
     this.deckUsed = this.deckUsed + this.players[playerId].hand.concat(this.players[playerId].hand.splice(0, numberOfPlayerCards)) //korten flyttas till slänghögen
 
 
-    /* Använd när buggen i slänghögen felsöks!
+    //Använd när buggen i slänghögen felsöks!
     console.log('spelarens kort flyttas till slänghögen')
     console.log(this.deckUsed) //debug både dealern och playerns kort ska finnas i deck used!
-    */
+    console.log('--------------------------------')
   }
   /*toString () {
     return `Spelarna i denna omgång är ( ${this.players} ), Kortleken har dessa kort ( ${this.deck} ), de använda korten är ( ${this.deckUsed} ).`
