@@ -71,13 +71,10 @@ export class CreateGame {
   }
   testPlayerTotVal (playerId) {
 
-    //testar spelarens
+    //testar  om spelarens totVal är 21, vinner om sant
     if (this.players[playerId].totVal === 21) {
       console.log('Player win!')
       this.winner = 'player'
-    } else if (this.players[playerId].totVal > 21) {
-      console.log('Dealer Win!')
-      this.winner = 'dealer'
     }
 
   }
@@ -208,11 +205,26 @@ export class CreateGame {
     console.log('Börjar spela:')
 
     this.testPlayerTotVal(playerId) //testar om spelarens två "startkort" är 21
-
+    
+    console.log('--------------')
+    console.log(this.players[playerId].hand)
+    console.log('--------------')
 
     for (let i = 0; this.players[playerId].totVal <= 15; i++) { //när spelarens summa är mindre än 15
+      if (this.players[playerId].hand.length == 5) { // bryter loopen om spelaren har 5 kort längre ner kommer villkor som gör att spelaren vinner om den har 5 kort och mindre än 21!
+        break
+      }
       console.log('Tar ett nytt kort', i + 1) // debug
-        
+
+      //om summan är mindre än 21 och handens längd är 5
+      /*const loopHand = this.players[playerId].hand
+
+      if (loopHand.length == 5) { // && this.players[playerId].totVal >= 21
+        console.log('spelaren har fem kort som är mindre än 21 och vinner rundan!')
+        this.winner = 'player'
+      }*/
+
+
       //lägger till kort i spelarens hand
       this.players[playerId].hand = this.players[playerId].hand.concat(this.deck.splice(0, 1))
         
@@ -234,12 +246,18 @@ export class CreateGame {
 
     console.table(this.players) //debug
 
-    this.testPlayerTotVal(playerId)
-    
-    if (this.players[playerId].totVal < 21) { //kan inte flyttas till testPlayerTotVal!
+    this.testPlayerTotVal(playerId) //används mer sen! ta bort if else if satsen nedan och flytta till metoden!
+
+    if (this.players[playerId].hand.length == 5 && this.players[playerId].totVal < 21) { // 5 kort och sum mindre än 21 (testad fungerar!)
+      console.log('Player Win! 5 kort & mindre än 21!')
+      this.winner = 'player'
+    } else if (this.players[playerId].totVal < 21) { //kan inte flyttas till testPlayerTotVal!
       console.log('GIVENS TUR!')
       var idPlayer = playerId
       this.startDealer(idPlayer)
+    } else if (this.players[playerId].totVal > 21) {
+      console.log('Dealer Win!')
+      this.winner = 'dealer'
     }
     
     /*
