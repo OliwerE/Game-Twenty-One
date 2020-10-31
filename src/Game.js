@@ -28,7 +28,7 @@ export class CreateGame {
 
     // Number of Players using argument from user
 
-    console.log(process.argv[2])
+    // console.log(process.argv[2]) // visar användarens argument
 
     if(process.argv[2] === undefined) { // om spelaren inte ger ett argument
       this.numberOfPlayers = 3
@@ -40,7 +40,9 @@ export class CreateGame {
       this.numberOfPlayers = process.argv[2]
       console.log('input är 20 eller 50')
     }else {
-      console.log('error') //kasta error här!!
+      process.exitCode = 26// kod 26 för felaktigt antal spelare
+      throw new Error('The passed argument is not between 1-7, 20 or 50!')
+
     }
 
     const numOfPlayers = this.numberOfPlayers
@@ -66,6 +68,18 @@ export class CreateGame {
         this.players[i].totVal = this.players[i].totVal + this.players[i].hand[a].rank
       }
     }
+  }
+  testPlayerTotVal (playerId) {
+
+    //testar spelarens
+    if (this.players[playerId].totVal === 21) {
+      console.log('Player win!')
+      this.winner = 'player'
+    } else if (this.players[playerId].totVal > 21) {
+      console.log('Dealer Win!')
+      this.winner = 'dealer'
+    }
+
   }
   startDealer (playerId) {
     var playerNumber = playerId + 1
@@ -193,9 +207,7 @@ export class CreateGame {
     // spelarens val
     console.log('Börjar spela:')
 
-    if (this.players[playerId].totVal === 21) {
-      console.log('Player win!') // om vinst slutar rundan här!
-    }
+    this.testPlayerTotVal(playerId) //testar om spelarens två "startkort" är 21
 
 
     for (let i = 0; this.players[playerId].totVal <= 15; i++) { //när spelarens summa är mindre än 15
@@ -222,16 +234,21 @@ export class CreateGame {
 
     console.table(this.players) //debug
 
+    this.testPlayerTotVal(playerId)
+    
+    if (this.players[playerId].totVal < 21) { //kan inte flyttas till testPlayerTotVal!
+      console.log('GIVENS TUR!')
+      var idPlayer = playerId
+      this.startDealer(idPlayer)
+    }
+    
+    /*
     if (this.players[playerId].totVal === 21) { //UPPREPAD KOD!!
       console.log('Player win!')
       this.winner = 'player'
-    } else if (this.players[playerId].totVal < 21) {
-      console.log('GIVENS TUR!')
-      this.startDealer(playerId)
-    } else if (this.players[playerId].totVal > 21) {
-      console.log('Dealer Win!')
-      this.winner = 'dealer'
-    }
+    } else */
+    
+
     
     //console.log(`${this.debugPlayers()}`) //spelarens kort innan slänghögen!
 
