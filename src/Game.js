@@ -22,7 +22,7 @@ export class CreateGame {
   gameSetup () {
     this.deck = Deck.create() //skapar kortleken
     // ...shuffle cards 
-    //Deck.shuffle(this.deck) //använd sen
+    Deck.shuffle(this.deck) //använd sen
     
     // return this.deck  //debug, visar hela kortleken
 
@@ -59,6 +59,7 @@ export class CreateGame {
       this.players.push(new CreatePlayer(createPlayerName))
       
       //gives all players first card
+      //OBS DETTA  MÅSTE KONTROLLERAS SÅ INTE KORT TAR SLUT!! (egentligen inte eftersom det högst kan vara 50 spelare..)
       this.players[i].hand = this.deck.splice(0, 1) // ger spelaren första kortet
       
 
@@ -77,6 +78,35 @@ export class CreateGame {
     console.log('---------gameSetup()-slut---------------')
 
 
+  }
+  reShuffleCards () {
+    console.log('method reShuffleCards starts!')
+    const lengthOfUsedDeck = this.deckUsed.length
+
+    var tempReturnCardsToDeck = this.deckUsed.concat(this.deckUsed.splice(0, lengthOfUsedDeck))
+    this.deck = this.deck.concat(tempReturnCardsToDeck)
+    var tempReturnCardsToDeck = []
+
+    console.log('är deckUsed tom:')
+    console.table(this.deckUsed)
+    console.log('-----------------------')
+
+    console.log('är deck fylld med 52 kort??:')
+    console.table(this.deck)
+    console.log('-----------------------')
+
+    Deck.shuffle(this.deck) //blandar korten!
+
+    console.log('deck blandad??:')
+    console.table(this.deck)
+    console.log('-----------------------')
+
+  /*
+    //debug kastar error efter att korten flyttat tbx till draghögen och blandats!
+    process.exitCode = 30 // egen exit code ha inte med!
+    throw new Error('kontroll om kortflytt är korrekt!') 
+  */
+    console.log('method reShuffleCards end!')
   }
   testPlayerTotVal (playerId) {
 
@@ -98,6 +128,18 @@ export class CreateGame {
     //dealer börjar spela (känner inte till spelarens kort!)
 
     //ger dealern första kortet
+
+    if (this.deck.length === 1) { //fungerar inte när använda ska flyttas till deck och blandas igen! hoppar över när deck.length är 1.. !
+      
+      this.reShuffleCards() //kallar på metoden som flyttar tbx och blandar korten till draghögen
+    
+      /* debug reShuffleCards
+      process.exitCode = 39// kod 26 för felaktigt antal spelare
+      throw new Error('kontroll kort tog slut för dealer när den tog första!')
+      */
+
+    }
+
     this.dealer[0].hand = this.deck.splice(0, 1)
 
     //summerar dealerns kort
@@ -113,14 +155,38 @@ export class CreateGame {
     this.dealer[0].totVal = dealerHandLength
 
 
-    console.log('teeest')
-    console.log(this.deckUsed)
-    console.log('/teeest')
+
 
     //delarn fortsätter spela
 
     for (let i = 0; this.dealer[0].totVal <= 17; i++) { //när spelarens summa är mindre än 17
-      console.log('Dealer yar ett nytt kort', i + 1) // debug  EN BUGG HÄR ÖVER 10 SPELARE!!
+      //arbetar med denna if else i gameround slå ihop sen!
+      if (this.deck.length === 1) { //denna är buggad när oblandat och 50 spelare!
+        
+        this.reShuffleCards() //kallar på metoden som flyttar tbx och blandar korten till draghögen      
+      
+        /* debug reShuffleCards
+        process.exitCode = 39// kod 26 för felaktigt antal spelare
+        throw new Error('kontroll kort tog slut för dealer när den skulle ta flera!')
+        */
+
+        /*
+        if (this.deck.length === 1) { //fungerar inte när använda ska flyttas till deck och blandas igen! hoppar över när deck.length är 1.. !
+        //this.deck = []
+        console.log(this.deck.length)
+        console.log('kort i deck if:')
+        console.table(this.deck)
+        process.exitCode = 30 // egen exit code ha inte med!
+        throw new Error('det är endast ett kort i deck!') 
+        */
+
+      } else if (this.deck.length === 0) {
+        console.log('kort i deck else if:')
+        console.table(this.deck)
+        process.exitCode = 27// Kod 27 = går inte att dra kort från draghögen!
+        throw new Error('deck is empty') 
+      } else {
+      console.log('Dealer yar ett nytt kort', i + 1)
         
       //lägger till kort i spelarens hand
       this.dealer[0].hand = this.dealer[0].hand.concat(this.deck.splice(0, 1))
@@ -139,6 +205,7 @@ export class CreateGame {
       //this.players[0].totVal = 18 //test
       //console.table('nya totVal:') //debug
       //console.table(this.players) //debug
+    }
     }
 
     console.table(this.dealer) //debug
@@ -189,10 +256,10 @@ export class CreateGame {
     const numberOfDealerCards = this.dealer[0].hand.length //antalet kort dealern har i handen
     this.deckUsed = this.deckUsed + this.dealer[0].hand.concat(this.dealer[0].hand.splice(0, numberOfDealerCards)) //korten flyttas till slänghögen
 */
-    
+    console.log('dealerns tomma hand:')
     console.log(this.dealer[0].hand) //debug om spelarens hand är tom
-    console.log('dealerns kort i slänghögen:')
-    console.table(this.deckUsed) //debug om korten är i slänghögen
+    console.log('dealerns kort flyttas till slänghögen')
+    //console.table(this.deckUsed) //debug om korten är i slänghögen
 
 
     console.log('här slutar dealern!')
@@ -219,9 +286,51 @@ export class CreateGame {
   }
   gameRound (playerIndex) { //spelar med en spelare
     var playerId = playerIndex
- 
-   // ger det andra "startkortet"
-   this.players[playerId].hand = this.players[playerId].hand.concat(this.deck.splice(0, 1))
+    
+    
+    if (this.deck.length === 1) { //fungerar inte när använda ska flyttas till deck och blandas igen! hoppar över när deck.length är 1.. !
+      
+      this.reShuffleCards() //kallar på metoden som flyttar tbx och blandar korten till draghögen
+
+      /*
+      const lengthOfUsedDeck = this.deckUsed.length
+
+        var tempReturnCardsToDeck = this.deckUsed.concat(this.deckUsed.splice(0, lengthOfUsedDeck))
+        this.deck = this.deck.concat(tempReturnCardsToDeck)
+        var tempReturnCardsToDeck = []
+
+        console.log('är deckUsed tom:')
+        console.table(this.deckUsed)
+        console.log('-----------------------')
+
+        console.log('är deck fylld med 52 kort??:')
+        console.table(this.deck)
+        console.log('-----------------------')
+
+        Deck.shuffle(this.deck) //blandar korten!
+
+        console.log('deck blandad??:')
+        console.table(this.deck)
+        console.log('-----------------------')
+      */
+      /*
+        //debug kastar error efter att korten flyttat tbx till draghögen och blandats!
+        process.exitCode = 30 // egen exit code ha inte med!
+        throw new Error('kontroll om kortflytt är korrekt!') 
+      */
+
+      
+      /*//this.deck = []
+      console.log(this.deck.length)
+      console.log('kort i deck if:')
+      console.table(this.deck)
+      process.exitCode = 30 // egen exit code ha inte med!
+      throw new Error('det är endast ett kort i deck!') 
+      */
+    } else {
+      // ger det andra "startkortet"
+      this.players[playerId].hand = this.players[playerId].hand.concat(this.deck.splice(0, 1))
+    }
 
     //sum cards, SKAPA EN METOD SOM SUMMERAR KORT!!
     let handLenght = this.players[playerId].hand.length //returns 2
@@ -245,11 +354,50 @@ export class CreateGame {
     console.log(this.players[playerId].hand)
     console.log('--------------')
 
+
     for (let i = 0; this.players[playerId].totVal <= 15; i++) { //när spelarens summa är mindre än 15
-      /*if (this.deck.length <= 0) {
-        process.exitCode = 26// kod 26 för felaktigt antal spelare om deck är tom
+      console.log('draghögens längd: ', this.deck.length)
+      if (this.deck.length === 1) { //denna är buggad när oblandat och 50 spelare!
+        
+        this.reShuffleCards() //kallar på metoden som flyttar tbx och blandar korten till draghögen
+
+        /*
+        const lengthOfUsedDeck = this.deckUsed.length
+
+        var tempReturnCardsToDeck = this.deckUsed.concat(this.deckUsed.splice(0, lengthOfUsedDeck))
+        this.deck = this.deck.concat(tempReturnCardsToDeck)
+        var tempReturnCardsToDeck = []
+
+        console.log('är deckUsed tom:')
+        console.table(this.deckUsed)
+        console.log('-----------------------')
+
+        console.log('är deck fylld med 52 kort??:')
+        console.table(this.deck)
+        console.log('-----------------------')
+        */
+
+        /* kontroll/debug
+        process.exitCode = 38 // egen exit code ha inte med!
+        throw new Error('kontroll om kortflytt är korrekt!') 
+        */
+        
+        /*
+        //this.deck = []
+        console.log(this.deck.length)
+        console.log('kort i deck if:')
+        console.table(this.deck)
+        process.exitCode = 31 // egen exit code ha inte med!
+        throw new Error('det är endast ett kort i deck!')
+        */
+        
+      } else if (this.deck.length === 0) {
+        console.log('kort i deck else if:')
+        console.table(this.deck)
+        process.exitCode = 27// Kod 27 = går inte att dra kort från draghögen!
         throw new Error('deck is empty') 
-      }*/
+      } else {
+
       if (this.players[playerId].hand.length == 5) { // bryter loopen om spelaren har 5 kort längre ner kommer villkor som gör att spelaren vinner om den har 5 kort och mindre än 21!
         break
       }
@@ -281,6 +429,7 @@ export class CreateGame {
       //this.players[0].totVal = 18 //test
       //console.table('nya totVal:') //debug
       //console.table(this.players) //debug
+      }
     }
 
     console.table(this.players) //debug
@@ -321,7 +470,7 @@ export class CreateGame {
       var deckUsedOneCard = this.players[playerId].hand.concat(this.players[playerId].hand.splice(0, 1))
       this.deckUsed = this.deckUsed.concat(deckUsedOneCard)
       var deckUsedOneCard = []
-    } else { // om spelaren har 2 eller fler kort i handen!
+    } else { // om spelaren har 2 eller fler kort i handen! STÅR SAMMA SAK! behöver inte if else??
       console.log ('DEBUG: spelarens hand är 2 eller längre!')
       const lengthOfPlayersHand = this.players[playerId].hand.length
 
