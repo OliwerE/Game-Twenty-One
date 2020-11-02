@@ -68,6 +68,15 @@ export class CreateGame {
         this.players[i].totVal = this.players[i].totVal + this.players[i].hand[a].rank
       }
     }
+
+
+
+    console.log('spelarna')
+    console.table(this.players)
+    console.table(this.dealer)
+    console.log('---------gameSetup()-slut---------------')
+
+
   }
   testPlayerTotVal (playerId) {
 
@@ -104,6 +113,9 @@ export class CreateGame {
     this.dealer[0].totVal = dealerHandLength
 
 
+    console.log('teeest')
+    console.log(this.deckUsed)
+    console.log('/teeest')
 
     //delarn fortsätter spela
 
@@ -152,13 +164,36 @@ export class CreateGame {
     }
 
     //dealerns hand flyttas till slänghögen
+
+    console.log('--------------------------------------')
+
+    if (this.dealer[0].hand.length <= 1) { //om spelaren har ett kort i handen
+      console.log('DEBUG: spelaren har en hand med längden 1 eller lägre')
+      var deckUsedOneCard = this.dealer[0].hand.concat(this.dealer[0].hand.splice(0, 1))
+      this.deckUsed = this.deckUsed.concat(deckUsedOneCard)
+      var deckUsedOneCard = []
+    } else { // om spelaren har 2 eller fler kort i handen!
+      console.log ('DEBUG: spelarens hand är 2 eller längre!')
+      const lengthOfPlayersHand = this.dealer[0].hand.length
+
+      var multipleUsedCards = this.dealer[0].hand.concat(this.dealer[0].hand.splice(0, lengthOfPlayersHand))
+      this.deckUsed = this.deckUsed.concat(multipleUsedCards)
+      var multipleUsedCards = []
+    }
+
+
+    console.log('----------------------------------')
+
+    //gamla slänghögen:
+    /*
     const numberOfDealerCards = this.dealer[0].hand.length //antalet kort dealern har i handen
     this.deckUsed = this.deckUsed + this.dealer[0].hand.concat(this.dealer[0].hand.splice(0, numberOfDealerCards)) //korten flyttas till slänghögen
-
+*/
     
     console.log(this.dealer[0].hand) //debug om spelarens hand är tom
     console.log('dealerns kort i slänghögen:')
-    console.log(this.deckUsed) //debug om korten är i slänghögen
+    console.table(this.deckUsed) //debug om korten är i slänghögen
+
 
     console.log('här slutar dealern!')
   }
@@ -211,6 +246,10 @@ export class CreateGame {
     console.log('--------------')
 
     for (let i = 0; this.players[playerId].totVal <= 15; i++) { //när spelarens summa är mindre än 15
+      /*if (this.deck.length <= 0) {
+        process.exitCode = 26// kod 26 för felaktigt antal spelare om deck är tom
+        throw new Error('deck is empty') 
+      }*/
       if (this.players[playerId].hand.length == 5) { // bryter loopen om spelaren har 5 kort längre ner kommer villkor som gör att spelaren vinner om den har 5 kort och mindre än 21!
         break
       }
@@ -259,7 +298,6 @@ export class CreateGame {
       console.log('Dealer Win!')
       this.winner = 'dealer'
     }
-    
     /*
     if (this.players[playerId].totVal === 21) { //UPPREPAD KOD!!
       console.log('Player win!')
@@ -275,13 +313,29 @@ export class CreateGame {
 
 
     // Spelarens hand flyttas till slänghögen
-    const numberOfPlayerCards = this.players[playerId].hand.length //antalet kort dealern har i handen
-    this.deckUsed = this.deckUsed + this.players[playerId].hand.concat(this.players[playerId].hand.splice(0, numberOfPlayerCards)) //korten flyttas till slänghögen
 
+    console.log('--------------------------------------')
+
+    if (this.players[playerId].hand.length <= 1) { //om spelaren har ett kort i handen
+      console.log('DEBUG: spelaren har en hand med längden 1 eller lägre')
+      var deckUsedOneCard = this.players[playerId].hand.concat(this.players[playerId].hand.splice(0, 1))
+      this.deckUsed = this.deckUsed.concat(deckUsedOneCard)
+      var deckUsedOneCard = []
+    } else { // om spelaren har 2 eller fler kort i handen!
+      console.log ('DEBUG: spelarens hand är 2 eller längre!')
+      const lengthOfPlayersHand = this.players[playerId].hand.length
+
+      var multipleUsedCards = this.players[playerId].hand.concat(this.players[playerId].hand.splice(0, lengthOfPlayersHand))
+      this.deckUsed = this.deckUsed.concat(multipleUsedCards)
+      var multipleUsedCards = []
+    }
+
+
+    console.log('----------------------------------')
 
     //Använd när buggen i slänghögen felsöks!
-    console.log('spelarens kort flyttas till slänghögen')
-    console.log(this.deckUsed) //debug både dealern och playerns kort ska finnas i deck used!
+    console.log('spelarens kort flyttas till slänghögen:')
+    console.table(this.deckUsed) //debug både dealern och playerns kort ska finnas i deck used!
     console.log('--------------------------------')
   }
   /*toString () {
@@ -305,7 +359,7 @@ export class CreateGame {
     for (let i = 0; i <= numOfPlayers - 1; i++) { // BUGG spelet krashar över 10 spelare!!
       this.gameRound(i)
     }
-    
+
   }
 }
 
