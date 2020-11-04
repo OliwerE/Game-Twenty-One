@@ -22,7 +22,7 @@ export class CreateGame {
 
   gameSetup () {
     // Creates Deck
-    //this.deck = Deck.create() // skapar kortleken
+    this.deck = Deck.create() // skapar kortleken
 
     // ...shuffle cards
     Deck.shuffle(this.deck) // använd sen
