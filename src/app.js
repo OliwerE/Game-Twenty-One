@@ -9,23 +9,20 @@
 
 // TODO: Replace the code below with your own game logic.
 
-import { Deck } from './Deck.js'
-import { PlayingCard } from './PlayingCard.js'
-import { CreatePlayer } from './CreatePlayer.js'
+// import { Deck } from './Deck.js'
+// import { PlayingCard } from './PlayingCard.js'
+// import { CreatePlayer } from './CreatePlayer.js'
+
 import { CreateGame } from './Game.js'
 
 try {
   const theGame = new CreateGame()
   theGame.startGame()
-  //console.log(theGame.toString())
+  // console.log(theGame.toString())
 
-
-  //debug
-  //console.log('---------------------------')
-  //console.log(`${theGame.debugPlayers()}`)
-  //console.log(theGame.debugCardsLeft())
-  //console.log(theGame.debugUsedCards())
-
+  // debug
+  // console.log('---------------------------')
+  // console.log(`${theGame.debugPlayers()}`)
 } catch (e) {
   console.error(e.message)
 }

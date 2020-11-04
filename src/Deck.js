@@ -21,7 +21,7 @@ export class Deck {
    *
    * @returns {PlayingCard[]} An array of 52 PlayingCard objects.
    */
-  static create () { //skapar kortlek
+  static create () { // skapar kortlek
     const suitKeys = Object.keys(Suits)
     const rankKeys = Object.keys(Ranks)
     const playingCards = new Array(suitKeys.length * rankKeys.length)

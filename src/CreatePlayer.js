@@ -6,16 +6,17 @@
  */
 
 export class CreatePlayer {
-    constructor (playerName, hand, totVal) {
+  constructor (playerName, hand, totVal) {
     this.playerName = playerName
-    this.hand = {} //spelarens kort ändra till [] ??
+    this.hand = {} // spelarens kort ändra till [] ??
     this.totVal = 0
-    }
-    set setSum (sum) { //lägger in nya summan (inte än)
-      this.totVal = sum
-    }
-    toString () {
-      return this.playerName + ' ' + this.hand + ' ' + `(${this.totVal})`
-    }
+  }
 
+  set setSum (sum) { // lägger in nya summan (inte än)
+    this.totVal = sum
+  }
+
+  toString () {
+    return this.playerName + ' ' + this.hand + ' ' + `(${this.totVal})`
+  }
 }
