@@ -122,13 +122,36 @@ export class CreateGame {
 
     console.log('method reShuffleCards end!')
   }
-  testPlayerTotVal (playerId) {
+  playerDealerRules (playerId) {
     
     //testar  om spelarens totVal är 21, vinner om sant
-    if (this.players[playerId].totVal === 21) {
+    //dessa är från spelare (gameround), slå ihop med dealerns?
+    if (this.players[playerId].totVal === 21) { // spelares kort lika med 21
       console.log('Player win!')
       this.winner = 'player'
-    }
+    } else if (this.players[playerId].hand.length == 5 && this.players[playerId].totVal < 21) { // 5 kort och sum mindre än 21 (testad fungerar!)
+      console.log('Player Win! 5 kort & mindre än 21!')
+      this.winner = 'player'
+    } else if (this.players[playerId].totVal > 21) { // player mer än 21
+      console.log('Dealer Win!')
+      this.winner = 'dealer'
+    } else if (this.players[0].hand.length > 0) { // om dealern handlängd är mer än 0 (har kort)
+      // dessa testas om dealern har kort!
+      if (this.players[0].totVal > 21) {
+        console.log('dealer Lost! Player Won!') // funkar!
+      } else if (this.players[0].totVal > this.players[playerId].totVal) { // player index hårdkodat importera [i] !!
+        console.log('dealer won! Player Lost!') // funkar
+      } else if (this.players[playerId].totVal > this.players[0].totVal) {
+        console.log('player won! Dealer lost!') // funkar!!
+      } else {
+        console.log('något kanske är fel! kolla upp startDealer metod!!') // fixa!! kommer hit om båda får samma totVal!
+      }
+    }else if (this.players[playerId].totVal < 21) { // player mindre än 21
+      console.log('GIVENS TUR!')
+      var idPlayer = playerId
+      console.log('debug', idPlayer)
+      this.startDealer(idPlayer)
+    } 
     
     /* bugg, går direkt till dealer!
     // avgör vinnare (player villkor)
@@ -236,15 +259,18 @@ export class CreateGame {
 
         // dealern räknar ut vem som vann:
 
-        const playerSum = this.players[playerId].totVal
-        const dealerSum = this.players[0].totVal
+        //const playerSum = this.players[playerId].totVal
+        //const dealerSum = this.players[0].totVal
 
         /*
         console.log('dealer debug: ')
         console.log(playerSum)
         console.log(dealerSum)
         */
-    
+        
+       this.playerDealerRules(playerId)
+        
+        /* rules flyttade till this.playerDealerRules(playerId)
         if (this.players[0].totVal > 21) {
           console.log('dealer Lost! Player Won!') // funkar!
         } else if (dealerSum > playerSum) { // player index hårdkodat importera [i] !!
@@ -254,6 +280,7 @@ export class CreateGame {
         } else {
           console.log('något kanske är fel! kolla upp startDealer metod!!') // fixa!! kommer hit om båda får samma totVal!
         }
+        */
 
 
 
@@ -358,8 +385,11 @@ export class CreateGame {
     //this.testPlayerTotVal(playerId) // testar om spelarens två "startkort" är 21
 
 
-    this.testPlayerTotVal(playerId) //testar om spelarens två "startkort" är 21
-
+    //this.testPlayerTotVal(playerId) //testar om spelarens två "startkort" är 21
+    if (this.players[playerId].totVal === 21) { // detta upprepas i testPlayerTotVal men går direkt till givens tur isf! (fix eller behåll upprepning?)
+      console.log('Player win!')
+      this.winner = 'player'
+    } // OBS man kan förlora här om man får 13 + 12 !! (eller kontrolleras detta innan fler kort ges?)
 
     /* gör samma som ovan rad 300
     if (this.players[playerId].totVal === 21) { // om spelarens hand är 21 vinner den direkt!
@@ -375,8 +405,9 @@ export class CreateGame {
     console.table(this.players) // debug
 
     //fixa här
-    this.testPlayerTotVal(playerId) // testar om spelarens värden är 21 mer sen!
+    this.playerDealerRules(playerId) // testar om spelarens värden är 21 mer sen!
 
+    /*
     if (this.players[playerId].hand.length == 5 && this.players[playerId].totVal < 21) { // 5 kort och sum mindre än 21 (testad fungerar!)
       console.log('Player Win! 5 kort & mindre än 21!')
       this.winner = 'player'
@@ -389,7 +420,7 @@ export class CreateGame {
       console.log('Dealer Win!')
       this.winner = 'dealer'
     }
-
+    */
 
 
     // resultat
