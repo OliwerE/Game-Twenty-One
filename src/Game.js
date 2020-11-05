@@ -25,7 +25,7 @@ export class CreateGame {
     this.deck = Deck.create() // skapar kortleken
 
     // ...shuffle cards
-    Deck.shuffle(this.deck) // använd sen
+    //Deck.shuffle(this.deck) // använd sen
 
     // Number of Players using argument from user
     if (process.argv[2] === undefined) { // om spelaren inte ger ett argument
@@ -60,11 +60,15 @@ export class CreateGame {
       // OBS DETTA  MÅSTE KONTROLLERAS SÅ INTE KORT TAR SLUT!! (egentligen inte eftersom det högst kan vara 50 spelare..)
       this.players[PlayerNumber].hand = this.deck.splice(0, 1) // ger spelaren första kortet
 
-      // sum cards
+      // sums cards
+      this.sumCards(i)
+      /*
+      // sum cards old version
       const handLenght = this.players[i].hand.length
       for (let a = 0; a <= handLenght - 1; a++) { // Summerar de första korten (behöver ingen loop för att summera ett kort!!)
         this.players[PlayerNumber].totVal = this.players[PlayerNumber].totVal + this.players[PlayerNumber].hand[a].rank
       }
+      */
     }
 
     console.log('spelarna')
@@ -145,7 +149,14 @@ export class CreateGame {
     */
   }
   sumCards (playerId) {
-    
+    const handLength = this.players[playerId].hand.length // returns 2
+    // console.log('handens längd2: ', handLenght2) //debug
+    let newTotVal = 0
+    // console.log(this.dealer[0].hand[0].rank)
+    for (let a = 0; a <= handLength - 1; a++) { // summerar korten i handen
+      newTotVal = newTotVal + this.players[playerId].hand[a].rank
+    }
+    this.players[playerId].totVal = newTotVal
   }
   dealerPlayerNewCard (playerId, maxtotVal) {
     console.log('-------------dealerPlayerNewCard method starts-----------------')
@@ -168,8 +179,9 @@ export class CreateGame {
         // lägger till kort i spelarens hand
         this.players[playerId].hand = this.players[playerId].hand.concat(this.deck.splice(0, 1))
 
-        // Summerar korten (upprepning...)
-
+        // Summerar korten (upprepning...)  DENNA FINNS ÄVEN I SUMCARDS!
+        this.sumCards(playerId)
+        /*
         const handLenght2 = this.players[playerId].hand.length // returns 2
         // console.log('handens längd2: ', handLenght2) //debug
         let newPlayerTotVal2 = 0
@@ -177,9 +189,20 @@ export class CreateGame {
           newPlayerTotVal2 = newPlayerTotVal2 + this.players[playerId].hand[a].rank
         }
         this.players[playerId].totVal = newPlayerTotVal2
+        */
       }
     }
     console.log('-----------------dealerPlayerNewCard method ends----------------')
+  }
+  sumCards (playerId) { // metoden summerar korten (används på flera ställen!)
+    const handLength = this.players[playerId].hand.length // returns 2
+    // console.log('handens längd2: ', handLenght2) //debug
+    let newTotVal = 0
+    // console.log(this.dealer[0].hand[0].rank)
+    for (let a = 0; a <= handLength - 1; a++) { // summerar korten i handen
+      newTotVal = newTotVal + this.players[playerId].hand[a].rank
+    }
+    this.players[playerId].totVal = newTotVal
   }
   startDealer (playerId) {
     console.log('---------------dealern börjar spela för spelare nr: ', playerId + 1, '-----------------')
@@ -189,7 +212,9 @@ export class CreateGame {
     }
     this.players[0].hand = this.deck.splice(0, 1) //ger första kortet till dealern
     
-    // summerar dealerns kort
+    this.sumCards(0)
+    
+    /*// summerar dealerns kort
     const dealerHandLength = this.players[0].hand.length // returns 2
     // console.log('handens längd2: ', handLenght2) //debug
     let newDealerTotVal = 0
@@ -198,6 +223,8 @@ export class CreateGame {
       newDealerTotVal = newDealerTotVal + this.players[0].hand[0].rank
     }
     this.players[0].totVal = dealerHandLength
+
+    */
 
     // delarn fortsätter spela
 
@@ -307,6 +334,9 @@ export class CreateGame {
       this.players[playerId].hand = this.players[playerId].hand.concat(this.deck.splice(0, 1))
     }
 
+    //sumthis.sumCards(playerId)
+
+    /* old sum upprep
     // sum cards, SKAPA EN METOD SOM SUMMERAR KORT!!
     const handLenght = this.players[playerId].hand.length // returns 2
     // console.log('handens längd: ', handLenght)
@@ -315,6 +345,7 @@ export class CreateGame {
       newPlayerTotVal = newPlayerTotVal + this.players[playerId].hand[a].rank
     }
     this.players[playerId].totVal = newPlayerTotVal
+  */
 
     console.log('Spelare', playerId, 'är redo att börja spela')
     console.table(this.players) // kontrollera att summan stämmer för player1
