@@ -25,7 +25,7 @@ export class CreateGame {
     this.deck = Deck.create() // skapar kortleken
 
     // ...shuffle cards
-    //Deck.shuffle(this.deck) // använd sen
+    Deck.shuffle(this.deck) // använd sen
 
     // Number of Players using argument from user
     if (process.argv[2] === undefined) { // om spelaren inte ger ett argument
@@ -45,7 +45,7 @@ export class CreateGame {
     const numOfPlayers = this.numberOfPlayers
 
     // creates dealer
-    this.players.push(new CreatePlayer('Dealer'))
+    this.players.push(new CreatePlayer('Dealer   :'))
 
     console.log('syns detta')
 
@@ -144,7 +144,7 @@ export class CreateGame {
         this.winner = 'dealer'
       } else if (this.players[0].totVal > 21) {
         console.log('dealer Lost! Player Won!') // funkar!
-        this.winner = 'dealer'
+        this.winner = 'player'
       } else if (this.players[0].totVal < 21 && this.players[0].totVal >= this.players[playerId].totVal ) { // om givens kort är mindre än 21 OCH större eller lika med spelarens, vinner given
         console.log('dealer less than 21 and more than or equal player totval, dealer win!1')
         this.winner = 'dealer'
@@ -184,6 +184,8 @@ export class CreateGame {
     */
   }
   sumCards (playerId) {
+    // summerar kort
+
     const handLength = this.players[playerId].hand.length // returns 2
     // console.log('handens längd2: ', handLenght2) //debug
     let newTotVal = 0
@@ -192,6 +194,10 @@ export class CreateGame {
       newTotVal = newTotVal + this.players[playerId].hand[a].rank
     }
     this.players[playerId].totVal = newTotVal
+
+
+
+
   }
   dealerPlayerNewCard (playerId, maxtotVal) {
     console.log('-------------dealerPlayerNewCard method starts-----------------')
@@ -313,8 +319,9 @@ export class CreateGame {
       console.log('något kanske är fel! kolla upp startDealer metod!') // fixa!! kommer hit om båda får samma totVal!
     }
 */
-    // dealerns hand flyttas till slänghögen
+    // dealerns hand flyttas till slänghögen (flyttad till slutet av GAMEROUND!)
 
+    /*
     console.log('--------------------------------------')
 
     if (this.players[0].hand.length <= 1) { // om dealer har ett kort i handen
@@ -337,7 +344,7 @@ export class CreateGame {
     console.log('dealerns kort flyttas till slänghögen')
     console.table(this.deckUsed)
     // console.table(this.deckUsed) //debug om korten är i slänghögen
-
+    */
     console.log('här slutar dealern!')
   }
 
@@ -356,7 +363,18 @@ export class CreateGame {
     }
 
     console.log(`${this.players[playerId]}`, bustedPlayer)
+    if (this.players[0].hand.length === undefined) {
+      console.log('Dealer   :',' -', bustedDealer)
+    } else {
     console.log(`${this.players[0]}`, bustedDealer) // behöver antagligen skrivas på annat sätt!
+    }
+
+    if (this.winner === 'player') {
+      console.log('Player wins!')
+    } else if (this.winner === 'dealer') {
+      console.log('Dealer wins!')
+    }
+
 
     console.log('-------------------------')
   }
@@ -438,6 +456,35 @@ export class CreateGame {
     // resultat
     this.results(playerId) // metod som skriver ut omgångens resultat
 
+    //dealerns hand flytts till slänghögen! (slå ihop med spelarna??)
+
+    if (this.players[0].hand.length > 0) {
+      console.log('--------------------------------------')
+
+      if (this.players[0].hand.length <= 1) { // om dealer har ett kort i handen
+        console.log('DEBUG: dealer har en hand med längden 1 eller lägre')
+        var deckUsedOneCard = this.players[0].hand.concat(this.players[0].hand.splice(0, 1))
+        this.deckUsed = this.deckUsed.concat(deckUsedOneCard)
+        var deckUsedOneCard = []
+      } else { // om dealer har 2 eller fler kort i handen!
+        console.log('DEBUG: dealer hand är 2 eller längre!')
+        const lengthOfPlayersHand = this.players[0].hand.length
+  
+        var multipleUsedCards = this.players[0].hand.concat(this.players[0].hand.splice(0, lengthOfPlayersHand))
+        this.deckUsed = this.deckUsed.concat(multipleUsedCards)
+        var multipleUsedCards = []
+      }
+  
+      console.log('----------------------------------')
+      console.log('dealerns tomma hand:')
+      console.log(this.players[0].hand) // debug om spelarens hand är tom
+      console.log('dealerns kort flyttas till slänghögen')
+      console.table(this.deckUsed)
+      // console.table(this.deckUsed) //debug om korten är i slänghögen
+    }
+
+
+
     // Spelarens hand flyttas till slänghögen
 
     console.log('--------------------------------------')
@@ -456,8 +503,15 @@ export class CreateGame {
       var multipleUsedCards = []
     }
 
+    //tömmer spelaren och ev dealerns totval (behöver egentligen inte återställa totVal)
+    this.sumCards(0)
+    this.sumCards(playerId)
+
     console.log('slänghögen fylls med korten:')
     console.table(this.deckUsed)
+
+    console.log('debug spelarna')
+    console.table(this.players)
 
   }
   debugPlayers () {
