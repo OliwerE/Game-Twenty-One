@@ -123,9 +123,8 @@ export class CreateGame {
     console.log('method reShuffleCards end!')
   }
   playerDealerRules (playerId) {
-    
-    //testar  om spelarens totVal är 21, vinner om sant
-    //dessa är från spelare (gameround), slå ihop med dealerns?
+
+    // Spelets regler
     if (this.players[playerId].totVal === 21) { // spelares kort lika med 21
       console.log('Player win!')
       this.winner = 'player'
@@ -137,21 +136,34 @@ export class CreateGame {
       this.winner = 'dealer'
     } else if (this.players[0].hand.length > 0) { // om dealern handlängd är mer än 0 (har kort)
       // dessa testas om dealern har kort!
-      if (this.players[0].totVal > 21) {
+      if (this.players[0].totVal === 21) { // dealerns hand = 21
+        console.log('dealers totVal = 21, Dealer win!1')
+        this.winner = 'dealer'
+      } else if (this.players[0].hand.length == 5 && this.players[0].totVal < 21) { // dealern exakt 5 kort och mindre än 21
+        console.log('Dealer Win! 5 kort & mindre än 21!1')
+        this.winner = 'dealer'
+      } else if (this.players[0].totVal > 21) {
         console.log('dealer Lost! Player Won!') // funkar!
-      } else if (this.players[0].totVal > this.players[playerId].totVal) { // player index hårdkodat importera [i] !!
+        this.winner = 'dealer'
+      } else if (this.players[0].totVal < 21 && this.players[0].totVal >= this.players[playerId].totVal ) { // om givens kort är mindre än 21 OCH större eller lika med spelarens, vinner given
+        console.log('dealer less than 21 and more than or equal player totval, dealer win!1')
+        this.winner = 'dealer'
+      } /** DESSA SKA INTE BEHÖVAS! else if (this.players[0].totVal > this.players[playerId].totVal) { // player index hårdkodat importera [i] !!
         console.log('dealer won! Player Lost!') // funkar
       } else if (this.players[playerId].totVal > this.players[0].totVal) {
         console.log('player won! Dealer lost!') // funkar!!
-      } else {
+      }*/ else { // fångar buggar! har ingen exit code!
         console.log('något kanske är fel! kolla upp startDealer metod!!') // fixa!! kommer hit om båda får samma totVal!
+        throw new Error('något är fel med dealerns regler!!')
       }
-    }else if (this.players[playerId].totVal < 21) { // player mindre än 21
+    }else if (this.players[playerId].totVal < 21) { // player mindre än 21, startar dealer
       console.log('GIVENS TUR!')
-      var idPlayer = playerId
-      console.log('debug', idPlayer)
-      this.startDealer(idPlayer)
-    } 
+      console.log('debug', playerId)
+      this.startDealer(playerId)
+    } else {  // fångar buggar! har ingen exit code!
+      console.log('något fel med dealerns ELLER player regler!!') // fixa!! kommer hit om båda får samma totVal!
+      throw new Error('något är fel med player regler!!')
+    }
     
     /* bugg, går direkt till dealer!
     // avgör vinnare (player villkor)
