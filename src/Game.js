@@ -61,7 +61,7 @@ export class CreateGame {
       this.players[PlayerNumber].hand = this.deck.splice(0, 1) // ger spelaren första kortet
 
       // sums cards
-      this.sumCards(i)
+      this.sumCards(i) // DENNA FUNGERAR INTE! summan visas inte!
       /*
       // sum cards old version
       const handLenght = this.players[i].hand.length
@@ -121,6 +121,47 @@ export class CreateGame {
     //throw new Error('test')
 
     console.log('method reShuffleCards end!')
+  }
+  aceCheck (playerId) {
+
+  
+    // om aceCount loopen hittar ett eller flera ace
+    console.log('-----------ace tester-------------')
+    // en loop som kontrollerar essen här! FLYTTAS TILL SUM METOD
+    var aceCount = 0
+    for (let i = 0; i < this.players[playerId].hand.length; i++) {
+      console.log('kontrollerar kort nr: ', i)
+      if (this.players[playerId].hand[i].rank === 1) {
+        console.log('jag hittade ett ess!!')
+        aceCount += 1
+
+      }
+    }
+    if (aceCount > 0) {
+      var extraAceValue = 13 * aceCount
+      var altTotVal = this.players[playerId].totVal + extraAceValue
+
+      if(altTotVal > this.players[playerId].totVal && altTotVal < 21) { // om 14 är bättre alternativ
+        console.log('DEBUG: ace ändrar värde till 14')
+        this.players[playerId].totVal = altTotVal
+      } else if (this.players[playerId].totVal > 21 && aceCount > 0) { // om summan är över 21 och det förekommer ett eller flera ess
+        //går tillbaks till 1 om det är bättre än 14!
+        if (this.players[playerId].totVal - extraAceValue < 21) {
+          console.log('DEBUG: ace går tillbaks till värdet 1')
+          this.players[playerId].totVal = this.players[playerId].totVal - extraAceValue
+        }
+      } else if (aceCount > 0 && altTotVal === 21) { // när det finns ess och summan blir 21 med 14 som värde
+        console.log('spelarens två första kort är 21!!')
+        this.players[playerId].totVal = altTotVal
+      } else {
+        console.log('DEBUG: ACE ÄNDRADES INTE!')
+      }
+    }
+    console.log('aceCounter result: ', aceCount)
+    // this.players[playerId].hand[0].rank //skriver ut ranken för hand index 0
+
+
+    console.log('-----------slut ace tester-------------')
   }
   playerDealerRules (playerId) {
 
@@ -202,7 +243,12 @@ export class CreateGame {
   dealerPlayerNewCard (playerId, maxtotVal) {
     console.log('-------------dealerPlayerNewCard method starts-----------------')
     console.log('spelar max till ', maxtotVal)
-    for (let i = 0; this.players[playerId].totVal <= maxtotVal; i++) { // när spelarens summa är mindre än 17
+    
+    // kontrollerar ess värde innan loopen startar
+    this.aceCheck(playerId)
+
+    if (this.players[playerId].totVal < maxtotVal) {
+    for (let i = 0; this.players[playerId].totVal < maxtotVal; i++) { // var innnan <= ändrade! ska inte dra om det är maxtotval!
       console.log('draghögens längd: ', this.deck.length)
       if (this.deck.length === 1) { // denna är buggad när oblandat och 50 spelare!
         this.reShuffleCards() // kallar på metoden som flyttar tbx och blandar korten till draghögen
@@ -232,43 +278,11 @@ export class CreateGame {
         this.players[playerId].totVal = newPlayerTotVal2
         */
       }
-      console.log('-----------ace tester-------------')
-      // en loop som kontrollerar essen här! FLYTTAS TILL SUM METOD
-      var aceCount = 0
-      for (let i = 0; i < this.players[playerId].hand.length; i++) {
-        console.log('kontrollerar kort nr: ', i)
-        if (this.players[playerId].hand[i].rank === 1) {
-          console.log('jag hittade ett ess!!')
-          aceCount += 1
-  
-        }
-      }
-      console.log('aceCounter result: ', aceCount)
-  
-      // om aceCount loopen hittar ett eller flera ace
-      if (aceCount > 0) {
-        var extraAceValue = 13 * aceCount
-        var altTotVal = this.players[playerId].totVal + extraAceValue
-  
-        if(altTotVal > this.players[playerId].totVal && altTotVal < 21) { // om 14 är bättre alternativ
-          console.log('DEBUG: ace ändrar värde till 14')
-          this.players[playerId].totVal = altTotVal
-        } else if (this.players[playerId].totVal > 21 && aceCount > 0) { // om summan är över 21 och det förekommer ett eller flera ess
-          //går tillbaks till 1 om det är bättre än 14!
-          if (this.players[playerId].totVal - extraAceValue < 21) {
-            console.log('DEBUG: ace går tillbaks till värdet 1')
-            this.players[playerId].totVal = this.players[playerId].totVal - extraAceValue
-          }
-        }else {
-          console.log('DEBUG: ACE ÄNDRADES INTE!')
-        }
-      }
-      // this.players[playerId].hand[0].rank //skriver ut ranken för hand index 0
-  
-  
-      console.log('-----------slut ace tester-------------')
+
+      this.aceCheck(playerId)
     }
     console.log('-----------------dealerPlayerNewCard method ends----------------')
+    }
   }
   sumCards (playerId) { // metoden summerar korten (används på flera ställen!)
     const handLength = this.players[playerId].hand.length // returns 2
@@ -438,6 +452,8 @@ export class CreateGame {
     }
     this.players[playerId].totVal = newPlayerTotVal
   */
+
+    this.sumCards(playerId)
 
     console.log('Spelare', playerId, 'är redo att börja spela')
     console.table(this.players) // kontrollera att summan stämmer för player1
