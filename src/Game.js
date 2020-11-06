@@ -20,14 +20,12 @@ export class CreateGame {
   }
   gameSetup () {
     this.deck = Deck.create() // Creates deck
-    //Deck.shuffle(this.deck) // shuffle cards
+    Deck.shuffle(this.deck) // shuffle cards
 
     // Number of Players
     if (process.argv[2] === undefined) { // om spelaren inte ger ett argument
       this.numberOfPlayers = 3
-    } else if (process.argv[2] > 0 && process.argv[2] < 8) {
-      this.numberOfPlayers = process.argv[2]
-    } else if (process.argv[2] === '20' || process.argv[2] === '50') { // göra om input till number?
+    } else if ((process.argv[2] > 0 && process.argv[2] < 8) || process.argv[2] === '20' || process.argv[2] === '50') {
       this.numberOfPlayers = process.argv[2]
     } else {
       process.exitCode = 26// kod 26 för felaktigt antal spelare
@@ -213,8 +211,6 @@ export class CreateGame {
     //tömmer spelaren och ev dealerns totval (behöver egentligen inte återställa totVal)
     this.sumCards(0)
     this.sumCards(playerId)
-    console.log('slänghögen')
-    console.table(this.deckUsed)
   }
   debugPlayers () {
     return this.players
