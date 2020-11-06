@@ -203,37 +203,18 @@ export class CreateGame {
     this.playerDealerRules(playerId) // testar om spelarens värden är 21 mer sen!
     // resultat
     this.results(playerId) // metod som skriver ut omgångens resultat
-    
-    
-    //dealerns hand flytts till slänghögen! (slå ihop med spelarna??)
-    if (this.players[0].hand.length > 0) {
 
-      if (this.players[0].hand.length <= 1) { // om dealer har ett kort i handen
-        var deckUsedOneCard = this.players[0].hand.concat(this.players[0].hand.splice(0, 1))
-        this.deckUsed = this.deckUsed.concat(deckUsedOneCard)
-        var deckUsedOneCard = []
-      } else { // om dealer har 2 eller fler kort i handen!
-        const lengthOfPlayersHand = this.players[0].hand.length
-        var multipleUsedCards = this.players[0].hand.concat(this.players[0].hand.splice(0, lengthOfPlayersHand))
-        this.deckUsed = this.deckUsed.concat(multipleUsedCards)
-        var multipleUsedCards = []
-      }
-    }
-    // Spelarens hand flyttas till slänghögen
-    if (this.players[playerId].hand.length <= 1) { // om spelaren har ett kort i handen
-      var deckUsedOneCard = this.players[playerId].hand.concat(this.players[playerId].hand.splice(0, 1))
-      this.deckUsed = this.deckUsed.concat(deckUsedOneCard)
-      var deckUsedOneCard = []
-    } else { // om spelaren har 2 eller fler kort i handen! STÅR SAMMA SAK! behöver inte if else??
-      const lengthOfPlayersHand = this.players[playerId].hand.length
-      var multipleUsedCards = this.players[playerId].hand.concat(this.players[playerId].hand.splice(0, lengthOfPlayersHand))
-      this.deckUsed = this.deckUsed.concat(multipleUsedCards)
-      var multipleUsedCards = []
-    }
+    //dealerns hand flyttas till slänghögen, är dealerns hand tom flyttas inga kort.
+    this.deckUsed = this.deckUsed.concat(this.players[0].hand.concat(this.players[0].hand.splice(0, this.players[0].hand.length)))
+
+    // spelarens hand flyttas till slänghögen
+    this.deckUsed = this.deckUsed.concat(this.players[playerId].hand.concat(this.players[playerId].hand.splice(0, this.players[playerId].hand.length)))
 
     //tömmer spelaren och ev dealerns totval (behöver egentligen inte återställa totVal)
     this.sumCards(0)
     this.sumCards(playerId)
+    console.log('slänghögen')
+    console.table(this.deckUsed)
   }
   debugPlayers () {
     return this.players
