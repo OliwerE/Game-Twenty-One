@@ -193,7 +193,10 @@ export class CreateGame {
         console.log('dealer won! Player Lost!') // funkar
       } else if (this.players[playerId].totVal > this.players[0].totVal) {
         console.log('player won! Dealer lost!') // funkar!!
-      }*/ else { // fångar buggar! har ingen exit code!
+      }*/ else if (this.players[0].totVal < 21 && this.players[0].totVal < this.players[playerId].totVal) { // om spelaren är större! då vinner spelaren!
+        console.log('spelaren är större än dealern!, spelaren VINNER!!(nya!!)')
+        this.winner = 'player'
+      } else { // fångar buggar! har ingen exit code!
         console.log('något kanske är fel! kolla upp startDealer metod!!') // fixa!! kommer hit om båda får samma totVal!
         throw new Error('något är fel med dealerns regler!!')
       }
