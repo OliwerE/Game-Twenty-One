@@ -7,8 +7,11 @@
 import { Deck } from './Deck.js'
 import { CreatePlayer } from './CreatePlayer.js'
 
-// Setup Game:
-
+/**
+ * Represents the game twenty one
+ *
+ * @class
+ */
 export class CreateGame {
   constructor () {
     this.players = []
