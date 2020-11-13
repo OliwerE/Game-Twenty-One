@@ -19,10 +19,10 @@ export class CreateGame {
    * @param {Array} players - The players stored in an array.
    * @param {Array} deck - The deck used to give players new cards.
    * @param {Array} deckUsed - An array containing used cards.
-   * @param {number} numOfPlayers - The amount of players in the current game.
+   * @param {number} numberOfPlayers - The amount of players in the current game.
    * @param {number} winner - A number corresponding to a winner.
    */
-  constructor (players, deck, deckUsed, numOfPlayers, winner) {
+  constructor (players, deck, deckUsed, numberOfPlayers, winner) {
     this.players = []
     this.deck = []
     this.deckUsed = []
