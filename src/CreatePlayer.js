@@ -11,6 +11,7 @@ export class CreatePlayer {
     this.hand = []
     this.totVal = 0
   }
+
   toString () {
     return this.playerName + ' ' + this.hand + ' ' + `(${this.totVal})`
   }
