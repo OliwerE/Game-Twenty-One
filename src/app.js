@@ -7,22 +7,12 @@
  * @version 1.0.0
  */
 
-// TODO: Replace the code below with your own game logic.
-
-// import { Deck } from './Deck.js'
-// import { PlayingCard } from './PlayingCard.js'
-// import { CreatePlayer } from './CreatePlayer.js'
-
 import { CreateGame } from './Game.js'
 
 try {
   const theGame = new CreateGame()
   theGame.startGame()
   // console.log(theGame.toString())
-
-  // debug
-  // console.log('---------------------------')
-  // console.log(`${theGame.debugPlayers()}`)
 } catch (e) {
   console.error(e.message)
 }

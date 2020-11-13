@@ -13,14 +13,28 @@ import { CreatePlayer } from './CreatePlayer.js'
  * @class
  */
 export class CreateGame {
-  constructor () {
+  /**
+   * The game data.
+   *
+   * @param {Array} players - The players stored in an array.
+   * @param {Array} deck - The deck used to give players new cards.
+   * @param {Array} deckUsed - An array containing used cards.
+   * @param {number} numOfPlayers - The amount of players in the current game.
+   * @param {number} winner - A number corresponding to a winner.
+   */
+  constructor (players, deck, deckUsed, numOfPlayers, winner) {
     this.players = []
     this.deck = []
     this.deckUsed = []
     this.numberOfPlayers = 0
-    this.winner = ''
+    this.winner = winner
   }
 
+  /**
+   * A method preparing the game.
+   *
+   * @function gameSetup
+   */
   gameSetup () {
     this.deck = Deck.create() // Creates deck
     Deck.shuffle(this.deck) // shuffle cards
@@ -49,6 +63,11 @@ export class CreateGame {
     }
   }
 
+  /**
+   * A method moving used cards to deck and shuffles again when deck is empty.
+   *
+   * @function reShuffleCards
+   */
   reShuffleCards () {
     const lengthOfUsedDeck = this.deckUsed.length
     var tempReturnCardsToDeck = this.deckUsed.concat(this.deckUsed.splice(0, lengthOfUsedDeck))
@@ -61,6 +80,12 @@ export class CreateGame {
     Deck.shuffle(this.deck)
   }
 
+  /**
+   * A method deciding if ace should be worth 1 or 14.
+   *
+   * @function aceCheck
+   * @param {number} playerId - A number corresponding to a player index in the players array.
+   */
   aceCheck (playerId) {
     var aceCount = 0
     for (let i = 0; i < this.players[playerId].hand.length; i++) {
@@ -81,6 +106,13 @@ export class CreateGame {
     }
   }
 
+  /**
+   * A method that handles rules.
+   *
+   * @function playerDealerRules
+   * @param {number} playerIndex - A number corresponding to a player or dealer index in the players array.
+   * @param {number} thePlayer - A number corresponding to a player index in the players array.
+   */
   playerDealerRules (playerIndex, thePlayer) { // playerIndex = dealer eller en spelare, thePlayer = spelaren som dealerns kort jämförs med
     if (this.players[playerIndex].totVal === 21) { // spelares kort lika med 21
       this.winner = playerIndex
@@ -104,6 +136,12 @@ export class CreateGame {
     }
   }
 
+  /**
+   * A method that sums cards in the players or dealers hand.
+   *
+   * @function sumCards
+   * @param {number} playerId - A number corresponding to a player or dealer index in the players array.
+   */
   sumCards (playerId) {
     const handLength = this.players[playerId].hand.length // Length of playerId hand
     let newTotVal = 0
@@ -113,6 +151,13 @@ export class CreateGame {
     this.players[playerId].totVal = newTotVal
   }
 
+  /**
+   * A method that gives player or dealer new card or cards.
+   *
+   * @function dealerPlayerNewCard
+   * @param {number} playerId - A number corresponding to a player or dealer index in the players array.
+   * @param {number} maxtotVal - A total value when the dealer or player stops taking more cards.
+   */
   dealerPlayerNewCard (playerId, maxtotVal) {
     this.aceCheck(playerId) // decides if ace = 1 or 14
 
@@ -135,6 +180,12 @@ export class CreateGame {
     }
   }
 
+  /**
+   * A method where the dealer plays a round.
+   *
+   * @function startDealer
+   * @param {number} playerId - The players index in this.players the dealer plays against.
+   */
   startDealer (playerId) {
   // ger dealern första kortet
     if (this.deck.length === 1) { // fungerar inte när använda ska flyttas till deck och blandas igen! hoppar över när deck.length är 1.. !
@@ -146,6 +197,12 @@ export class CreateGame {
     this.playerDealerRules(0, playerId) // Game Rules
   }
 
+  /**
+   * A method displaying results to the user.
+   *
+   * @function results
+   * @param {number} playerId - The index of player. Used to show name, hand & total value.
+   */
   results (playerId) { // Skriver ut omgångens resultat
     var bustedPlayer = ''
     var bustedDealer = ''
@@ -169,6 +226,12 @@ export class CreateGame {
     }
   }
 
+  /**
+   * A method playing a round with one player.
+   *
+   * @function gameRound
+   * @param {number} playerId - The index of the player playing a round.
+   */
   gameRound (playerId) { // spelar med en spelare
     if (this.deck.length === 1) { // fungerar inte när använda ska flyttas till deck och blandas igen! hoppar över när deck.length är 1.. !
       this.reShuffleCards() // kallar på metoden som flyttar tbx och blandar korten till draghögen
@@ -200,6 +263,11 @@ export class CreateGame {
     this.sumCards(playerId)
   }
 
+  /**
+   * A method starting game setup and then playing a round with each player.
+   *
+   * @function startGame
+   */
   startGame () {
     this.gameSetup()
 

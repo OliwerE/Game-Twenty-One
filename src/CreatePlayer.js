@@ -25,9 +25,10 @@ export class CreatePlayer {
   }
 
   /**
-   * Create a player.
+   * Returns a string including player name, cards in the hand and the total value.
    *
-   * @returns {string} - Returns a string including player name, cards in the hand and the total value.
+   * @returns {string} - String returning name, hand and total value
+   * @function toString
    */
   toString () {
     return this.playerName + ' ' + this.hand + ' ' + `(${this.totVal})`
