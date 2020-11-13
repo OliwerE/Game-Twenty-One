@@ -78,33 +78,22 @@ export class CreateGame {
     }
   }
 
-  playerDealerRules (playerId) {
-    // Spelets regler
-    if (this.players[playerId].totVal === 21) { // spelares kort lika med 21
-      this.winner = 'player'
-    } else if (this.players[playerId].hand.length === 5 && this.players[playerId].totVal < 21) { // 5 kort och sum mindre än 21 (testad fungerar!)
-      this.winner = 'player'
-    } else if (this.players[playerId].totVal > 21) { // player mer än 21
-      this.winner = 'dealer'
-    } else if (this.players[0].hand.length > 0) { // om dealern handlängd är mer än 0 (har kort)
-      // dessa testas om dealern har kort!
-      if (this.players[0].totVal === 21) { // dealerns hand = 21
-        this.winner = 'dealer'
-      } else if (this.players[0].hand.length === 5 && this.players[0].totVal < 21) { // dealern exakt 5 kort och mindre än 21
-        this.winner = 'dealer'
-      } else if (this.players[0].totVal > 21) {
-        this.winner = 'player'
-      } else if (this.players[0].totVal < 21 && this.players[0].totVal >= this.players[playerId].totVal) { // om givens kort är mindre än 21 OCH större eller lika med spelarens, vinner given
-        this.winner = 'dealer'
-      } else if (this.players[0].totVal < 21 && this.players[0].totVal < this.players[playerId].totVal) { // om spelaren är större! då vinner spelaren!
-        this.winner = 'player'
-      } else { // fångar buggar! har ingen exit code!
-        throw new Error('något är fel med dealerns regler!!')
-      }
-    } else if (this.players[playerId].totVal < 21) { // player mindre än 21, startar dealer
-      this.startDealer(playerId)
-    } else { // fångar buggar! har ingen exit code!
-      throw new Error('något är fel med player regler!!')
+  playerDealerRules (playerIndex, thePlayer) { // playerIndex = dealer eller en spelare, thePlayer = spelaren som dealerns kort jämförs med
+    if (this.players[playerIndex].totVal === 21) { // spelares kort lika med 21
+      this.winner = playerIndex
+    } else if (this.players[playerIndex].hand.length === 5 && this.players[playerIndex].totVal < 21) { // 5 kort och sum mindre än 21 (testad fungerar!)
+      this.winner = playerIndex
+    } else if (this.players[playerIndex].totVal > 21) { // player mer än 21
+      this.winner = playerIndex
+    } else if (this.players[0].totVal === 0 && this.players[playerIndex].totVal < 21) { // player mindre än 21, startar dealer
+      this.startDealer(playerIndex)
+    } else if (this.players[0].totVal < 21 && this.players[0].totVal >= this.players[thePlayer].totVal) { // om givens kort är mindre än 21 OCH större eller lika med spelarens, vinner given
+      this.winner = 0
+    } else if (this.players[0].totVal < 21 && this.players[0].totVal < this.players[thePlayer].totVal) { // om spelaren är större! då vinner spelaren!
+      this.winner = thePlayer
+    } else { // Om det finns en bugg i reglerna
+      process.exitCode = 1
+      throw new Error('The outcome has no rule!')
     }
   }
 
@@ -147,7 +136,7 @@ export class CreateGame {
     this.players[0].hand = this.deck.splice(0, 1) // Dealer first card
     this.sumCards(0) // decides if ace = 1 or 14
     this.dealerPlayerNewCard(0, 17) // Dealer adds one card until totval => 17
-    this.playerDealerRules(playerId) // Game Rules
+    this.playerDealerRules(0, playerId) // Game Rules
   }
 
   results (playerId) { // Skriver ut omgångens resultat
