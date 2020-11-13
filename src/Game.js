@@ -155,17 +155,15 @@ export class CreateGame {
       bustedPlayer = 'BUSTED!'
       winnerText = 'Dealer wins!'
     } else {
-      throw new Error('något fel 321')
+      process.exitCode = 1
+      throw new Error('this.winner is less than 0, Something went wrong!')
     }
 
-    console.log(`${this.players[playerId]}`, bustedPlayer)
-    if (this.players[0].hand.length === undefined) {
-      console.log('Dealer   :', ' -', bustedDealer, '\n', winnerText, '\n')
+    if (this.players[0].hand.length === 0) { // om dealern inte spelat
+      console.log(`${this.players[playerId]} ${bustedPlayer}\nDealer   : - ${bustedDealer}\n${winnerText}\n`)
     } else {
-      console.log(`${this.players[0]}`, bustedDealer, '\n', winnerText, '\n') // behöver antagligen skrivas på annat sätt!
+      console.log(`${this.players[playerId]} ${bustedPlayer}\n${this.players[0]} ${bustedDealer}\n${winnerText}\n`)
     }
-
-    //console.log(winnerText)
   }
 
   gameRound (playerId) { // spelar med en spelare
@@ -199,15 +197,9 @@ export class CreateGame {
     this.sumCards(playerId)
   }
 
-  debugPlayers () {
-    return this.players
-  }
-
   startGame () {
-    // setup
     this.gameSetup()
 
-    // Dealer play with players one at a time
     const numOfPlayers = this.numberOfPlayers
     for (let i = 0; i <= numOfPlayers - 1; i++) {
       const j = i + 1
