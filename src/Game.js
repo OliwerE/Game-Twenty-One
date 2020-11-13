@@ -84,7 +84,11 @@ export class CreateGame {
     } else if (this.players[playerIndex].hand.length === 5 && this.players[playerIndex].totVal < 21) { // 5 kort och sum mindre än 21 (testad fungerar!)
       this.winner = playerIndex
     } else if (this.players[playerIndex].totVal > 21) { // player mer än 21
-      this.winner = playerIndex
+      if (playerIndex > 0) {
+        this.winner = 0
+      } else {
+        this.winner = 1 // hårdkodad 1a är en spelare som vinner oavsett vilken!
+      }
     } else if (this.players[0].totVal === 0 && this.players[playerIndex].totVal < 21) { // player mindre än 21, startar dealer
       this.startDealer(playerIndex)
     } else if (this.players[0].totVal < 21 && this.players[0].totVal >= this.players[thePlayer].totVal) { // om givens kort är mindre än 21 OCH större eller lika med spelarens, vinner given
@@ -142,27 +146,26 @@ export class CreateGame {
   results (playerId) { // Skriver ut omgångens resultat
     var bustedPlayer = ''
     var bustedDealer = ''
+    var winnerText = ''
 
-    // Vem som är förlorare, fixa!!
-    if (this.winner === 'player') {
+    if (this.winner > 0) {
       bustedDealer = 'BUSTED!'
-    } else if (this.winner === 'dealer') {
+      winnerText = 'Player wins!'
+    } else if (this.winner === 0) {
       bustedPlayer = 'BUSTED!'
+      winnerText = 'Dealer wins!'
+    } else {
+      throw new Error('något fel 321')
     }
 
     console.log(`${this.players[playerId]}`, bustedPlayer)
     if (this.players[0].hand.length === undefined) {
-      console.log('Dealer   :', ' -', bustedDealer)
+      console.log('Dealer   :', ' -', bustedDealer, '\n', winnerText, '\n')
     } else {
-      console.log(`${this.players[0]}`, bustedDealer) // behöver antagligen skrivas på annat sätt!
+      console.log(`${this.players[0]}`, bustedDealer, '\n', winnerText, '\n') // behöver antagligen skrivas på annat sätt!
     }
 
-    if (this.winner === 'player') {
-      console.log('Player wins!')
-    } else if (this.winner === 'dealer') {
-      console.log('Dealer wins!')
-    }
-    console.log('')
+    //console.log(winnerText)
   }
 
   gameRound (playerId) { // spelar med en spelare
