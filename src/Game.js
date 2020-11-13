@@ -36,30 +36,28 @@ export class CreateGame {
    * @function gameSetup
    */
   gameSetup () {
-    this.deck = Deck.create() // Creates deck
-    Deck.shuffle(this.deck) // shuffle cards
+    this.deck = Deck.create()
+    Deck.shuffle(this.deck)
 
     // Number of Players
-    if (process.argv[2] === undefined) { // om spelaren inte ger ett argument
+    if (process.argv[2] === undefined) {
       this.numberOfPlayers = 3
     } else if ((process.argv[2] > 0 && process.argv[2] < 8) || process.argv[2] === '20' || process.argv[2] === '50') {
       this.numberOfPlayers = process.argv[2]
     } else {
-      process.exitCode = 26// kod 26 för felaktigt antal spelare
+      process.exitCode = 26
       throw new Error('The passed argument is not between 1-7, 20 or 50!')
     }
 
-    this.players.push(new CreatePlayer('Dealer   :'))// creates dealer
+    this.players.push(new CreatePlayer('Dealer   :'))
 
     // create players + gives first card
-    for (let i = 0; i <= this.numberOfPlayers - 1; i++) { // skapar spelarna och summerar (ej dealer)
-      // creates player
+    for (let i = 0; i <= this.numberOfPlayers - 1; i++) {
       const PlayerNumber = i + 1
       const createPlayerName = 'Player #' + PlayerNumber + ': '
       this.players.push(new CreatePlayer(createPlayerName))
-
-      this.players[PlayerNumber].hand = this.deck.splice(0, 1) // gives all players first card
-      this.sumCards(i) // sums cards
+      this.players[PlayerNumber].hand = this.deck.splice(0, 1)
+      this.sumCards(i)
     }
   }
 
@@ -89,7 +87,6 @@ export class CreateGame {
   aceCheck (playerId) {
     var aceCount = 0
     for (let i = 0; i < this.players[playerId].hand.length; i++) {
-      // counts ace
       aceCount = 0
       for (let i = 0; i < this.players[playerId].hand.length; i++) {
         if (this.players[playerId].hand[i].rank === 1) {
@@ -99,7 +96,7 @@ export class CreateGame {
     }
     var extraAceValue = 13 * aceCount
     var altTotVal = this.players[playerId].totVal + extraAceValue
-    if (aceCount > 0 && this.players[playerId].totVal < 21) { // om aceCount har hittat kort och vanliga totalvärdet är mindre än 21
+    if (aceCount > 0 && this.players[playerId].totVal < 21) {
       if ((this.players[playerId].totVal + extraAceValue) <= 21) {
         this.players[playerId].totVal = altTotVal
       }
@@ -113,24 +110,24 @@ export class CreateGame {
    * @param {number} playerIndex - A number corresponding to a player or dealer index in the players array.
    * @param {number} thePlayer - A number corresponding to a player index in the players array.
    */
-  playerDealerRules (playerIndex, thePlayer) { // playerIndex = dealer eller en spelare, thePlayer = spelaren som dealerns kort jämförs med
-    if (this.players[playerIndex].totVal === 21) { // spelares kort lika med 21
+  playerDealerRules (playerIndex, thePlayer) {
+    if (this.players[playerIndex].totVal === 21) {
       this.winner = playerIndex
-    } else if (this.players[playerIndex].hand.length === 5 && this.players[playerIndex].totVal < 21) { // 5 kort och sum mindre än 21 (testad fungerar!)
+    } else if (this.players[playerIndex].hand.length === 5 && this.players[playerIndex].totVal < 21) {
       this.winner = playerIndex
-    } else if (this.players[playerIndex].totVal > 21) { // player mer än 21
+    } else if (this.players[playerIndex].totVal > 21) {
       if (playerIndex > 0) {
-        this.winner = 0
+        this.winner = 0 // Dealer win
       } else {
-        this.winner = 1 // hårdkodad 1a är en spelare som vinner oavsett vilken!
+        this.winner = 1 // player win
       }
-    } else if (this.players[0].totVal === 0 && this.players[playerIndex].totVal < 21) { // player mindre än 21, startar dealer
+    } else if (this.players[0].totVal === 0 && this.players[playerIndex].totVal < 21) {
       this.startDealer(playerIndex)
-    } else if (this.players[0].totVal < 21 && this.players[0].totVal >= this.players[thePlayer].totVal) { // om givens kort är mindre än 21 OCH större eller lika med spelarens, vinner given
+    } else if (this.players[0].totVal < 21 && this.players[0].totVal >= this.players[thePlayer].totVal) {
       this.winner = 0
-    } else if (this.players[0].totVal < 21 && this.players[0].totVal < this.players[thePlayer].totVal) { // om spelaren är större! då vinner spelaren!
+    } else if (this.players[0].totVal < 21 && this.players[0].totVal < this.players[thePlayer].totVal) {
       this.winner = thePlayer
-    } else { // Om det finns en bugg i reglerna
+    } else { // If a rule is forgotten.
       process.exitCode = 1
       throw new Error('The outcome has no rule!')
     }
@@ -159,23 +156,23 @@ export class CreateGame {
    * @param {number} maxtotVal - A total value when the dealer or player stops taking more cards.
    */
   dealerPlayerNewCard (playerId, maxtotVal) {
-    this.aceCheck(playerId) // decides if ace = 1 or 14
+    this.aceCheck(playerId) // Decides ace value.
 
     if (this.players[playerId].totVal < maxtotVal) {
-      for (let i = 0; this.players[playerId].totVal < maxtotVal; i++) { // var innnan <= ändrade! ska inte dra om det är maxtotval!
-        if (this.deck.length === 1) { // denna är buggad när oblandat och 50 spelare!
-          this.reShuffleCards() // kallar på metoden som flyttar tbx och blandar korten till draghögen
+      for (let i = 0; this.players[playerId].totVal < maxtotVal; i++) {
+        if (this.deck.length === 1) {
+          this.reShuffleCards() // Moves cards back to deck and shuffles.
         } else if (this.deck.length === 0) {
-          process.exitCode = 27// Kod 27 = går inte att dra kort från draghögen!
+          process.exitCode = 27
           throw new Error('deck is empty')
         } else {
-          if (this.players[playerId].hand.length === 5) { // bryter loopen om spelaren har 5 kort längre ner kommer villkor som gör att spelaren vinner om den har 5 kort och mindre än 21!
+          if (this.players[playerId].hand.length === 5) {
             break
           }
-          this.players[playerId].hand = this.players[playerId].hand.concat(this.deck.splice(0, 1))// Adds one card to hand
-          this.sumCards(playerId) // Sum cards
+          this.players[playerId].hand = this.players[playerId].hand.concat(this.deck.splice(0, 1))
+          this.sumCards(playerId)
         }
-        this.aceCheck(playerId) // decides if ace = 1 or 14
+        this.aceCheck(playerId)
       }
     }
   }
@@ -187,14 +184,14 @@ export class CreateGame {
    * @param {number} playerId - The players index in this.players the dealer plays against.
    */
   startDealer (playerId) {
-  // ger dealern första kortet
-    if (this.deck.length === 1) { // fungerar inte när använda ska flyttas till deck och blandas igen! hoppar över när deck.length är 1.. !
-      this.reShuffleCards() // kallar på metoden som flyttar tbx och blandar korten till draghögen
+    if (this.deck.length === 1) {
+      this.reShuffleCards() // Moves cards back to deck if one left.
     }
-    this.players[0].hand = this.deck.splice(0, 1) // Dealer first card
-    this.sumCards(0) // decides if ace = 1 or 14
-    this.dealerPlayerNewCard(0, 17) // Dealer adds one card until totval => 17
-    this.playerDealerRules(0, playerId) // Game Rules
+    this.players[0].hand = this.deck.splice(0, 1)
+    this.sumCards(0)
+    this.aceCheck(0)
+    this.dealerPlayerNewCard(0, 17) // Dealer round
+    this.playerDealerRules(0, playerId) // 0 = dealer, playerId = player
   }
 
   /**
@@ -203,7 +200,7 @@ export class CreateGame {
    * @function results
    * @param {number} playerId - The index of player. Used to show name, hand & total value.
    */
-  results (playerId) { // Skriver ut omgångens resultat
+  results (playerId) {
     var bustedPlayer = ''
     var bustedDealer = ''
     var winnerText = ''
@@ -219,7 +216,7 @@ export class CreateGame {
       throw new Error('this.winner is less than 0, Something went wrong!')
     }
 
-    if (this.players[0].hand.length === 0) { // om dealern inte spelat
+    if (this.players[0].hand.length === 0) {
       console.log(`${this.players[playerId]} ${bustedPlayer}\nDealer   : - ${bustedDealer}\n${winnerText}\n`)
     } else {
       console.log(`${this.players[playerId]} ${bustedPlayer}\n${this.players[0]} ${bustedDealer}\n${winnerText}\n`)
@@ -232,33 +229,26 @@ export class CreateGame {
    * @function gameRound
    * @param {number} playerId - The index of the player playing a round.
    */
-  gameRound (playerId) { // spelar med en spelare
-    if (this.deck.length === 1) { // fungerar inte när använda ska flyttas till deck och blandas igen! hoppar över när deck.length är 1.. !
-      this.reShuffleCards() // kallar på metoden som flyttar tbx och blandar korten till draghögen
+  gameRound (playerId) {
+    if (this.deck.length === 1) {
+      this.reShuffleCards()
     } else {
-      // ger det andra "startkortet"
-      this.players[playerId].hand = this.players[playerId].hand.concat(this.deck.splice(0, 1))
+      this.players[playerId].hand = this.players[playerId].hand.concat(this.deck.splice(0, 1)) // Player get second setup card
     }
-    this.sumCards(playerId) // sum cards
-    // spelarens val
+    this.sumCards(playerId)
 
-    if (this.players[playerId].totVal === 21) { // detta upprepas i testPlayerTotVal men går direkt till givens tur isf! (fix eller behåll upprepning?)
+    if (this.players[playerId].totVal === 21) {
       this.winner = 'player'
-    } // OBS man kan förlora här om man får 13 + 12 !! (eller kontrolleras detta innan fler kort ges?)
+    }
 
-    // spelaren fortsätter spela
-    this.dealerPlayerNewCard(playerId, 14) // skickar spelar index och spelarnas (alla) högsta totval för att ta nytt kort
-    this.playerDealerRules(playerId) // testar om spelarens värden är 21 mer sen!
-    // resultat
-    this.results(playerId) // metod som skriver ut omgångens resultat
+    this.dealerPlayerNewCard(playerId, 14) // Player take new cards until max value is reached.
+    this.playerDealerRules(playerId) // Decides if player won or dealer is going to play
+    this.results(playerId)
 
-    // dealerns hand flyttas till slänghögen, är dealerns hand tom flyttas inga kort.
-    this.deckUsed = this.deckUsed.concat(this.players[0].hand.concat(this.players[0].hand.splice(0, this.players[0].hand.length)))
+    this.deckUsed = this.deckUsed.concat(this.players[0].hand.concat(this.players[0].hand.splice(0, this.players[0].hand.length))) // Dealer hand moves to used deck.
 
-    // spelarens hand flyttas till slänghögen
-    this.deckUsed = this.deckUsed.concat(this.players[playerId].hand.concat(this.players[playerId].hand.splice(0, this.players[playerId].hand.length)))
+    this.deckUsed = this.deckUsed.concat(this.players[playerId].hand.concat(this.players[playerId].hand.splice(0, this.players[playerId].hand.length))) // Player hand moves to used deck.
 
-    // tömmer spelaren och ev dealerns totval (behöver egentligen inte återställa totVal)
     this.sumCards(0)
     this.sumCards(playerId)
   }
@@ -269,12 +259,11 @@ export class CreateGame {
    * @function startGame
    */
   startGame () {
-    this.gameSetup()
+    this.gameSetup() // Prepares game.
 
     const numOfPlayers = this.numberOfPlayers
-    for (let i = 0; i <= numOfPlayers - 1; i++) {
+    for (let i = 0; i <= numOfPlayers - 1; i++) { // Plays one round with each player.
       const j = i + 1
-      // console.log('id: ', j)
       this.gameRound(j)
     }
   }
