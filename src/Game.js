@@ -87,7 +87,7 @@ export class CreateGame {
       throw new Error('The passed argument is not between 1-7, 20 or 50!')
     }
 
-    this.players.push(new CreatePlayer('Dealer   :'))
+    this.players.push(new CreatePlayer('Dealer   : '))
 
     // create players + gives first card
     for (let i = 0; i <= this.numberOfPlayers - 1; i++) {
@@ -199,17 +199,18 @@ export class CreateGame {
     this.sumCards(playerId)
 
     if (this.players[playerId].totVal === 21) {
-      this.winner = 'player'
+      this.winner = playerId
     }
 
     this.dealerPlayerNewCard(playerId, 14) // Player take new cards until max value is reached.
     this.playerDealerRules(playerId) // Decides if player won or dealer is going to play
     this.results(playerId)
 
-    this.deckUsed = this.deckUsed.concat(this.players[0].hand.concat(this.players[0].hand.splice(0, this.players[0].hand.length))) // Dealer hand moves to used deck.
+    this.deckUsed = this.deckUsed.concat(this.players[0].hand.concat(this.players[0].hand.splice(0, this.players[0].hand.length))) // Dealer hand moves to deckUsed.
 
-    this.deckUsed = this.deckUsed.concat(this.players[playerId].hand.concat(this.players[playerId].hand.splice(0, this.players[playerId].hand.length))) // Player hand moves to used deck.
+    this.deckUsed = this.deckUsed.concat(this.players[playerId].hand.concat(this.players[playerId].hand.splice(0, this.players[playerId].hand.length))) // Player hand moves to deckUsed.
 
+    // Resets player and dealer totVal.
     this.sumCards(0)
     this.sumCards(playerId)
   }
@@ -225,10 +226,10 @@ export class CreateGame {
     var bustedDealer = ''
     var winnerText = ''
 
-    if (this.winner > 0) {
+    if (this.winner > 0) { // If winner is a player.
       bustedDealer = 'BUSTED!'
       winnerText = 'Player wins!'
-    } else if (this.winner === 0) {
+    } else if (this.winner === 0) { // if winner is the dealer.
       bustedPlayer = 'BUSTED!'
       winnerText = 'Dealer wins!'
     } else {
@@ -237,7 +238,7 @@ export class CreateGame {
     }
 
     if (this.players[0].hand.length === 0) {
-      console.log(`${this.players[playerId]} ${bustedPlayer}\nDealer   : - ${bustedDealer}\n${winnerText}\n`)
+      console.log(`${this.players[playerId]} ${bustedPlayer}\nDealer   :  - ${bustedDealer}\n${winnerText}\n`)
     } else {
       console.log(`${this.players[playerId]} ${bustedPlayer}\n${this.players[0]} ${bustedDealer}\n${winnerText}\n`)
     }
@@ -253,8 +254,8 @@ export class CreateGame {
 
     const numOfPlayers = this.numberOfPlayers
     for (let i = 0; i <= numOfPlayers - 1; i++) { // Plays one round with each player.
-      const j = i + 1
-      this.gameRound(j)
+      const playersindex = i + 1 // Skips dealer at index 0
+      this.gameRound(playersindex)
     }
   }
 }
