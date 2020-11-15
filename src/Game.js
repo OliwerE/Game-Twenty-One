@@ -70,7 +70,7 @@ export class Game extends CardLogic {
    */
   gameSetup () {
     this.deck = Deck.create()
-    //Deck.shuffle(this.deck)
+    Deck.shuffle(this.deck)
 
     // Number of Players
     if (process.argv[2] === undefined) {
@@ -90,7 +90,6 @@ export class Game extends CardLogic {
       const createPlayerName = 'Player #' + PlayerNumber + ': '
       this.players.push(new CreatePlayer(createPlayerName))
       this.players[PlayerNumber].hand = this.deck.splice(0, 1)
-      this.sumCards(i)
     }
   }
 

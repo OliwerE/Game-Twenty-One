@@ -73,8 +73,6 @@ export class CardLogic {
    * @param {number} maxtotVal - A total value when the dealer or player stops taking more cards.
    */
   dealerPlayerNewCard (playerId, maxtotVal) {
-    this.aceCheck(playerId) // Decides ace value.
-
     for (let i = 0; this.players[playerId].totVal < maxtotVal; i++) {
       if (this.deck.length === 1) {
         this.reShuffleCards() // Moves cards back to deck and shuffles.
