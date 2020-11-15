@@ -180,9 +180,6 @@ export class CreateGame {
     if (this.deck.length === 1) {
       this.reShuffleCards() // Moves cards back to deck if one left.
     }
-    this.players[0].hand = this.deck.splice(0, 1)
-    this.sumCards(0)
-    this.aceCheck(0)
     this.dealerPlayerNewCard(0, 17) // Dealer round
     this.playerDealerRules(0, playerId) // 0 = dealer, playerId = player
   }
