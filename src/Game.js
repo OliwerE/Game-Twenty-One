@@ -38,7 +38,7 @@ export class CreateGame {
    */
   aceCheck (playerId) {
     var aceCount = 0
-    for (let i = 0; i < this.players[playerId].hand.length; i++) {
+    for (let i = 0; i < this.players[playerId].hand.length; i++) { // adds one to aceCount each time an ace is found
       if (this.players[playerId].hand[i].rank === 1) {
         aceCount += 1
       }
@@ -191,17 +191,6 @@ export class CreateGame {
    * @param {number} playerId - The index of the player playing a round.
    */
   gameRound (playerId) {
-    if (this.deck.length === 1) {
-      this.reShuffleCards()
-    } else {
-      this.players[playerId].hand = this.players[playerId].hand.concat(this.deck.splice(0, 1)) // Player get second setup card
-    }
-    this.sumCards(playerId)
-
-    if (this.players[playerId].totVal === 21) {
-      this.winner = playerId
-    }
-
     this.dealerPlayerNewCard(playerId, 14) // Player take new cards until max value is reached.
     this.playerDealerRules(playerId) // Decides if player won or dealer is going to play
     this.results(playerId)
