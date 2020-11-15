@@ -31,6 +31,47 @@ export class CreateGame {
   }
 
   /**
+   * A method deciding if ace should be worth 1 or 14.
+   *
+   * @function aceCheck
+   * @param {number} playerId - A number corresponding to a player index in the players array.
+   */
+  aceCheck (playerId) {
+    var aceCount = 0
+    for (let i = 0; i < this.players[playerId].hand.length; i++) {
+      aceCount = 0
+      for (let i = 0; i < this.players[playerId].hand.length; i++) {
+        if (this.players[playerId].hand[i].rank === 1) {
+          aceCount += 1
+        }
+      }
+    }
+    var extraAceValue = 13 * aceCount
+    var altTotVal = this.players[playerId].totVal + extraAceValue
+    if (aceCount > 0 && this.players[playerId].totVal < 21) {
+      if ((this.players[playerId].totVal + extraAceValue) <= 21) {
+        this.players[playerId].totVal = altTotVal
+      }
+    }
+  }
+
+  /**
+   * A method that sums cards in the players or dealers hand.
+   *
+   * @function sumCards
+   * @param {number} playerId - A number corresponding to a player or dealer index in the players array.
+   */
+
+  sumCards (playerId) {
+    const handLength = this.players[playerId].hand.length // Length of playerId hand
+    let newTotVal = 0
+    for (let a = 0; a <= handLength - 1; a++) { // Sum cards
+      newTotVal = newTotVal + this.players[playerId].hand[a].rank
+    }
+    this.players[playerId].totVal = newTotVal
+  }
+
+  /**
    * A method preparing the game.
    *
    * @function gameSetup
@@ -58,48 +99,6 @@ export class CreateGame {
       this.players.push(new CreatePlayer(createPlayerName))
       this.players[PlayerNumber].hand = this.deck.splice(0, 1)
       this.sumCards(i)
-    }
-  }
-
-  /**
-   * A method moving used cards to deck and shuffles again when deck is empty.
-   *
-   * @function reShuffleCards
-   */
-  reShuffleCards () {
-    const lengthOfUsedDeck = this.deckUsed.length
-    var tempReturnCardsToDeck = this.deckUsed.concat(this.deckUsed.splice(0, lengthOfUsedDeck))
-    this.deck = this.deck.concat(tempReturnCardsToDeck)
-    tempReturnCardsToDeck = []
-    if (this.deck.length < 2) {
-      process.exitCode = 1 // Övrigt fel, kortleken räcker inte till antalet spelare
-      throw new Error('Too many players, the amount of cards are not enough')
-    }
-    Deck.shuffle(this.deck)
-  }
-
-  /**
-   * A method deciding if ace should be worth 1 or 14.
-   *
-   * @function aceCheck
-   * @param {number} playerId - A number corresponding to a player index in the players array.
-   */
-  aceCheck (playerId) {
-    var aceCount = 0
-    for (let i = 0; i < this.players[playerId].hand.length; i++) {
-      aceCount = 0
-      for (let i = 0; i < this.players[playerId].hand.length; i++) {
-        if (this.players[playerId].hand[i].rank === 1) {
-          aceCount += 1
-        }
-      }
-    }
-    var extraAceValue = 13 * aceCount
-    var altTotVal = this.players[playerId].totVal + extraAceValue
-    if (aceCount > 0 && this.players[playerId].totVal < 21) {
-      if ((this.players[playerId].totVal + extraAceValue) <= 21) {
-        this.players[playerId].totVal = altTotVal
-      }
     }
   }
 
@@ -134,18 +133,20 @@ export class CreateGame {
   }
 
   /**
-   * A method that sums cards in the players or dealers hand.
+   * A method moving used cards to deck and shuffles again when deck is empty.
    *
-   * @function sumCards
-   * @param {number} playerId - A number corresponding to a player or dealer index in the players array.
+   * @function reShuffleCards
    */
-  sumCards (playerId) {
-    const handLength = this.players[playerId].hand.length // Length of playerId hand
-    let newTotVal = 0
-    for (let a = 0; a <= handLength - 1; a++) { // Sum cards
-      newTotVal = newTotVal + this.players[playerId].hand[a].rank
+  reShuffleCards () {
+    const lengthOfUsedDeck = this.deckUsed.length
+    var tempReturnCardsToDeck = this.deckUsed.concat(this.deckUsed.splice(0, lengthOfUsedDeck))
+    this.deck = this.deck.concat(tempReturnCardsToDeck)
+    tempReturnCardsToDeck = []
+    if (this.deck.length < 2) {
+      process.exitCode = 1 // Övrigt fel, kortleken räcker inte till antalet spelare
+      throw new Error('Too many players, the amount of cards are not enough')
     }
-    this.players[playerId].totVal = newTotVal
+    Deck.shuffle(this.deck)
   }
 
   /**
@@ -195,35 +196,6 @@ export class CreateGame {
   }
 
   /**
-   * A method displaying results to the user.
-   *
-   * @function results
-   * @param {number} playerId - The index of player. Used to show name, hand & total value.
-   */
-  results (playerId) {
-    var bustedPlayer = ''
-    var bustedDealer = ''
-    var winnerText = ''
-
-    if (this.winner > 0) {
-      bustedDealer = 'BUSTED!'
-      winnerText = 'Player wins!'
-    } else if (this.winner === 0) {
-      bustedPlayer = 'BUSTED!'
-      winnerText = 'Dealer wins!'
-    } else {
-      process.exitCode = 1
-      throw new Error('this.winner is less than 0, Something went wrong!')
-    }
-
-    if (this.players[0].hand.length === 0) {
-      console.log(`${this.players[playerId]} ${bustedPlayer}\nDealer   : - ${bustedDealer}\n${winnerText}\n`)
-    } else {
-      console.log(`${this.players[playerId]} ${bustedPlayer}\n${this.players[0]} ${bustedDealer}\n${winnerText}\n`)
-    }
-  }
-
-  /**
    * A method playing a round with one player.
    *
    * @function gameRound
@@ -251,6 +223,35 @@ export class CreateGame {
 
     this.sumCards(0)
     this.sumCards(playerId)
+  }
+
+  /**
+   * A method displaying results to the user.
+   *
+   * @function results
+   * @param {number} playerId - The index of player. Used to show name, hand & total value.
+   */
+  results (playerId) {
+    var bustedPlayer = ''
+    var bustedDealer = ''
+    var winnerText = ''
+
+    if (this.winner > 0) {
+      bustedDealer = 'BUSTED!'
+      winnerText = 'Player wins!'
+    } else if (this.winner === 0) {
+      bustedPlayer = 'BUSTED!'
+      winnerText = 'Dealer wins!'
+    } else {
+      process.exitCode = 1
+      throw new Error('this.winner is less than 0, Something went wrong!')
+    }
+
+    if (this.players[0].hand.length === 0) {
+      console.log(`${this.players[playerId]} ${bustedPlayer}\nDealer   : - ${bustedDealer}\n${winnerText}\n`)
+    } else {
+      console.log(`${this.players[playerId]} ${bustedPlayer}\n${this.players[0]} ${bustedDealer}\n${winnerText}\n`)
+    }
   }
 
   /**
