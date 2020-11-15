@@ -8,7 +8,11 @@
  */
 
 import { Game } from './Game.js'
-
+/**
+ * A function starting the game twenty one.
+ *
+ * @function startGame
+ */
 const startGame = function () {
   const theGame = new Game()
   theGame.startGame()
