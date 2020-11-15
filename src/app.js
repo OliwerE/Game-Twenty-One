@@ -9,10 +9,8 @@
 
 import { Game } from './Game.js'
 
-try {
+const startGame = function () {
   const theGame = new Game()
   theGame.startGame()
-  // console.log(theGame.toString())
-} catch (e) {
-  console.error(e.message)
 }
+startGame()
