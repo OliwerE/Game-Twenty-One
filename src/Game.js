@@ -7,6 +7,7 @@
 import { Deck } from './Deck.js'
 import { CreatePlayer } from './CreatePlayer.js'
 import { CardLogic } from './CardLogic.js'
+import { Result } from './Results.js'
 
 /**
  * Represents the game twenty one
@@ -116,7 +117,7 @@ export class Game extends CardLogic {
   gameRound (playerId) {
     this.dealerPlayerNewCard(playerId, 14) // Player take new cards until max value is reached.
     this.playerDealerRules(playerId) // Decides if player won or dealer is going to play
-    this.results(playerId)
+    Result.results(this.winner, this.players[playerId], this.players[0], this.players[0].hand.length)
 
     this.deckUsed = this.deckUsed.concat(this.players[0].hand.concat(this.players[0].hand.splice(0, this.players[0].hand.length))) // Dealer hand moves to deckUsed.
 
@@ -125,35 +126,6 @@ export class Game extends CardLogic {
     // Resets player and dealer totVal.
     this.sumCards(0)
     this.sumCards(playerId)
-  }
-
-  /**
-   * A method displaying results to the user.
-   *
-   * @function results
-   * @param {number} playerId - The index of player. Used to show name, hand & total value.
-   */
-  results (playerId) {
-    var bustedPlayer = ''
-    var bustedDealer = ''
-    var winnerText = ''
-
-    if (this.winner > 0) { // If winner is a player.
-      bustedDealer = 'BUSTED!'
-      winnerText = 'Player wins!'
-    } else if (this.winner === 0) { // if winner is the dealer.
-      bustedPlayer = 'BUSTED!'
-      winnerText = 'Dealer wins!'
-    } else {
-      process.exitCode = 1
-      throw new Error('this.winner is less than 0, Something went wrong!')
-    }
-
-    if (this.players[0].hand.length === 0) {
-      console.log(`${this.players[playerId]} ${bustedPlayer}\nDealer   :  - ${bustedDealer}\n${winnerText}\n`)
-    } else {
-      console.log(`${this.players[playerId]} ${bustedPlayer}\n${this.players[0]} ${bustedDealer}\n${winnerText}\n`)
-    }
   }
 
   /**
