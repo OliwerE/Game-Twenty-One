@@ -6,13 +6,14 @@
  */
 import { Deck } from './Deck.js'
 import { CreatePlayer } from './CreatePlayer.js'
+import { CardLogic } from './CardLogic.js'
 
 /**
  * Represents the game twenty one
  *
  * @class
  */
-export class CreateGame {
+export class Game extends CardLogic {
   /**
    * The game data.
    *
@@ -23,80 +24,12 @@ export class CreateGame {
    * @param {number} winner - A number corresponding to a winner.
    */
   constructor (players, deck, deckUsed, numberOfPlayers, winner) {
+    super()
     this.players = []
     this.deck = []
     this.deckUsed = []
     this.numberOfPlayers = 0
     this.winner = winner
-  }
-
-  /**
-   * A method deciding if ace should be worth 1 or 14.
-   *
-   * @function aceCheck
-   * @param {number} playerId - A number corresponding to a player index in the players array.
-   */
-  aceCheck (playerId) {
-    var aceCount = 0
-    for (let i = 0; i < this.players[playerId].hand.length; i++) { // adds one to aceCount each time an ace is found
-      if (this.players[playerId].hand[i].rank === 1) {
-        aceCount += 1
-      }
-    }
-    var extraAceValue = 13 * aceCount
-    var altTotVal = this.players[playerId].totVal + extraAceValue
-    if (aceCount > 0 && this.players[playerId].totVal < 21) {
-      if ((this.players[playerId].totVal + extraAceValue) <= 21) { // Changes ace value to 14 if new total value is equal or less than 21.
-        this.players[playerId].totVal = altTotVal
-      }
-    }
-  }
-
-  /**
-   * A method that sums cards in the players or dealers hand.
-   *
-   * @function sumCards
-   * @param {number} playerId - A number corresponding to a player or dealer index in the players array.
-   */
-
-  sumCards (playerId) {
-    const handLength = this.players[playerId].hand.length // Length of playerId hand
-    let newTotVal = 0
-    for (let a = 0; a <= handLength - 1; a++) { // Sum cards value
-      newTotVal = newTotVal + this.players[playerId].hand[a].rank
-    }
-    this.players[playerId].totVal = newTotVal
-  }
-
-  /**
-   * A method preparing the game.
-   *
-   * @function gameSetup
-   */
-  gameSetup () {
-    this.deck = Deck.create()
-    Deck.shuffle(this.deck)
-
-    // Number of Players
-    if (process.argv[2] === undefined) {
-      this.numberOfPlayers = 3
-    } else if ((process.argv[2] > 0 && process.argv[2] < 8) || process.argv[2] === '20' || process.argv[2] === '50') {
-      this.numberOfPlayers = process.argv[2]
-    } else {
-      process.exitCode = 26
-      throw new Error('The passed argument is not between 1-7, 20 or 50!')
-    }
-
-    this.players.push(new CreatePlayer('Dealer   : '))
-
-    // create players + gives first card
-    for (let i = 0; i <= this.numberOfPlayers - 1; i++) {
-      const PlayerNumber = i + 1
-      const createPlayerName = 'Player #' + PlayerNumber + ': '
-      this.players.push(new CreatePlayer(createPlayerName))
-      this.players[PlayerNumber].hand = this.deck.splice(0, 1)
-      this.sumCards(i)
-    }
   }
 
   /**
@@ -130,43 +63,33 @@ export class CreateGame {
   }
 
   /**
-   * A method moving used cards to deck and shuffles again when deck is empty.
+   * A method preparing the game.
    *
-   * @function reShuffleCards
+   * @function gameSetup
    */
-  reShuffleCards () {
-    this.deck = this.deck.concat(this.deckUsed.concat(this.deckUsed.splice(0, this.deckUsed.length))) // moves deckUsed cards back to deck
-    if (this.deck.length < 2) { // if deck still equals one after moving deckUsed to deck.
-      process.exitCode = 1
-      throw new Error('Too many players, the amount of cards are not enough')
-    }
+  gameSetup () {
+    this.deck = Deck.create()
     Deck.shuffle(this.deck)
-  }
 
-  /**
-   * A method that gives player or dealer new card or cards.
-   *
-   * @function dealerPlayerNewCard
-   * @param {number} playerId - A number corresponding to a player or dealer index in the players array.
-   * @param {number} maxtotVal - A total value when the dealer or player stops taking more cards.
-   */
-  dealerPlayerNewCard (playerId, maxtotVal) {
-    this.aceCheck(playerId) // Decides ace value.
+    // Number of Players
+    if (process.argv[2] === undefined) {
+      this.numberOfPlayers = 3
+    } else if ((process.argv[2] > 0 && process.argv[2] < 8) || process.argv[2] === '20' || process.argv[2] === '50') {
+      this.numberOfPlayers = process.argv[2]
+    } else {
+      process.exitCode = 26
+      throw new Error('The passed argument is not between 1-7, 20 or 50!')
+    }
 
-    for (let i = 0; this.players[playerId].totVal < maxtotVal; i++) {
-      if (this.deck.length === 1) {
-        this.reShuffleCards() // Moves cards back to deck and shuffles.
-      } else if (this.deck.length === 0) {
-        process.exitCode = 27
-        throw new Error('deck is empty')
-      } else {
-        if (this.players[playerId].hand.length === 5) {
-          break
-        }
-        this.players[playerId].hand = this.players[playerId].hand.concat(this.deck.splice(0, 1))
-        this.sumCards(playerId)
-      }
-      this.aceCheck(playerId)
+    this.players.push(new CreatePlayer('Dealer   : '))
+
+    // create players + gives first card
+    for (let i = 0; i <= this.numberOfPlayers - 1; i++) {
+      const PlayerNumber = i + 1
+      const createPlayerName = 'Player #' + PlayerNumber + ': '
+      this.players.push(new CreatePlayer(createPlayerName))
+      this.players[PlayerNumber].hand = this.deck.splice(0, 1)
+      this.sumCards(i)
     }
   }
 

@@ -7,10 +7,10 @@
  * @version 1.0.0
  */
 
-import { CreateGame } from './Game.js'
+import { Game } from './Game.js'
 
 try {
-  const theGame = new CreateGame()
+  const theGame = new Game()
   theGame.startGame()
   // console.log(theGame.toString())
 } catch (e) {
