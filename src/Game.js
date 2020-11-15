@@ -46,7 +46,7 @@ export class CreateGame {
     var extraAceValue = 13 * aceCount
     var altTotVal = this.players[playerId].totVal + extraAceValue
     if (aceCount > 0 && this.players[playerId].totVal < 21) {
-      if ((this.players[playerId].totVal + extraAceValue) <= 21) {
+      if ((this.players[playerId].totVal + extraAceValue) <= 21) { // Changes ace value to 14 if new total value is equal or less than 21.
         this.players[playerId].totVal = altTotVal
       }
     }
@@ -62,7 +62,7 @@ export class CreateGame {
   sumCards (playerId) {
     const handLength = this.players[playerId].hand.length // Length of playerId hand
     let newTotVal = 0
-    for (let a = 0; a <= handLength - 1; a++) { // Sum cards
+    for (let a = 0; a <= handLength - 1; a++) { // Sum cards value
       newTotVal = newTotVal + this.players[playerId].hand[a].rank
     }
     this.players[playerId].totVal = newTotVal
@@ -115,7 +115,7 @@ export class CreateGame {
       if (playerIndex > 0) {
         this.winner = 0 // Dealer win
       } else {
-        this.winner = 1 // player win
+        this.winner = 1 // player win (could be any number higher than 0)
       }
     } else if (this.players[0].totVal === 0 && this.players[playerIndex].totVal < 21) {
       this.startDealer(playerIndex)
@@ -125,7 +125,7 @@ export class CreateGame {
       this.winner = thePlayer
     } else { // If a rule is forgotten.
       process.exitCode = 1
-      throw new Error('The outcome has no rule!')
+      throw new Error('The result has no rule!')
     }
   }
 
@@ -135,12 +135,9 @@ export class CreateGame {
    * @function reShuffleCards
    */
   reShuffleCards () {
-    const lengthOfUsedDeck = this.deckUsed.length
-    var tempReturnCardsToDeck = this.deckUsed.concat(this.deckUsed.splice(0, lengthOfUsedDeck))
-    this.deck = this.deck.concat(tempReturnCardsToDeck)
-    tempReturnCardsToDeck = []
-    if (this.deck.length < 2) {
-      process.exitCode = 1 // Övrigt fel, kortleken räcker inte till antalet spelare
+    this.deck = this.deck.concat(this.deckUsed.concat(this.deckUsed.splice(0, this.deckUsed.length))) // moves deckUsed cards back to deck
+    if (this.deck.length < 2) { // if deck still equals one after moving deckUsed to deck.
+      process.exitCode = 1
       throw new Error('Too many players, the amount of cards are not enough')
     }
     Deck.shuffle(this.deck)
