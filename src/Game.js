@@ -89,7 +89,7 @@ export class Game extends CardLogic {
       const PlayerNumber = i + 1
       const createPlayerName = 'Player #' + PlayerNumber + ': '
       this.players.push(new CreatePlayer(createPlayerName))
-      this.players[PlayerNumber].hand = this.deck.splice(0, 1)
+      this.players[PlayerNumber].hand = this.deck.splice(0, 1) // does not add sum to players totVal until player get second card.
     }
   }
 
