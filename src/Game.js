@@ -39,11 +39,8 @@ export class CreateGame {
   aceCheck (playerId) {
     var aceCount = 0
     for (let i = 0; i < this.players[playerId].hand.length; i++) {
-      aceCount = 0
-      for (let i = 0; i < this.players[playerId].hand.length; i++) {
-        if (this.players[playerId].hand[i].rank === 1) {
-          aceCount += 1
-        }
+      if (this.players[playerId].hand[i].rank === 1) {
+        aceCount += 1
       }
     }
     var extraAceValue = 13 * aceCount
