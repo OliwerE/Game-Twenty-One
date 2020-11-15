@@ -57,7 +57,7 @@ export class CardLogic {
    * @function reShuffleCards
    */
   reShuffleCards () {
-    this._deck = this._deck.concat(this.deckUsed.concat(this.deckUsed.splice(0, this.deckUsed.length))) // moves deckUsed cards back to deck
+    this._deck = this._deck.concat(this._deckUsed.concat(this._deckUsed.splice(0, this._deckUsed.length))) // moves deckUsed cards back to deck
     if (this._deck.length < 2) { // if deck still equals one after moving deckUsed to deck.
       process.exitCode = 1
       throw new Error('Too many players, the amount of cards are not enough')
