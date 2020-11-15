@@ -153,22 +153,20 @@ export class CreateGame {
   dealerPlayerNewCard (playerId, maxtotVal) {
     this.aceCheck(playerId) // Decides ace value.
 
-    if (this.players[playerId].totVal < maxtotVal) {
-      for (let i = 0; this.players[playerId].totVal < maxtotVal; i++) {
-        if (this.deck.length === 1) {
-          this.reShuffleCards() // Moves cards back to deck and shuffles.
-        } else if (this.deck.length === 0) {
-          process.exitCode = 27
-          throw new Error('deck is empty')
-        } else {
-          if (this.players[playerId].hand.length === 5) {
-            break
-          }
-          this.players[playerId].hand = this.players[playerId].hand.concat(this.deck.splice(0, 1))
-          this.sumCards(playerId)
+    for (let i = 0; this.players[playerId].totVal < maxtotVal; i++) {
+      if (this.deck.length === 1) {
+        this.reShuffleCards() // Moves cards back to deck and shuffles.
+      } else if (this.deck.length === 0) {
+        process.exitCode = 27
+        throw new Error('deck is empty')
+      } else {
+        if (this.players[playerId].hand.length === 5) {
+          break
         }
-        this.aceCheck(playerId)
+        this.players[playerId].hand = this.players[playerId].hand.concat(this.deck.splice(0, 1))
+        this.sumCards(playerId)
       }
+      this.aceCheck(playerId)
     }
   }
 
