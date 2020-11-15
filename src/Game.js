@@ -70,7 +70,7 @@ export class Game extends CardLogic {
    */
   gameSetup () {
     this.deck = Deck.create()
-    Deck.shuffle(this.deck)
+    //Deck.shuffle(this.deck)
 
     // Number of Players
     if (process.argv[2] === undefined) {
@@ -101,9 +101,6 @@ export class Game extends CardLogic {
    * @param {number} playerId - The players index in this.players the dealer plays against.
    */
   startDealer (playerId) {
-    if (this.deck.length === 1) {
-      this.reShuffleCards() // Moves cards back to deck if one left.
-    }
     this.dealerPlayerNewCard(0, 17) // Dealer round
     this.playerDealerRules(0, playerId) // 0 = dealer, playerId = player
   }
@@ -115,7 +112,7 @@ export class Game extends CardLogic {
    * @param {number} playerId - The index of the player playing a round.
    */
   gameRound (playerId) {
-    this.dealerPlayerNewCard(playerId, 14) // Player take new cards until max value is reached.
+    this.dealerPlayerNewCard(playerId, 8) // Player take new cards until max value is reached.
     this.playerDealerRules(playerId) // Decides if player won or dealer is going to play
     Result.results(this.winner, this.players[playerId], this.players[0], this.players[0].hand.length)
 
