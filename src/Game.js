@@ -108,7 +108,7 @@ export class Game extends CardLogic {
    * @param {number} playerId - The index of the player playing a round.
    */
   gameRound (playerId) {
-    this.dealerPlayerNewCard(playerId, 8) // Player take new cards until max value is reached.
+    this.dealerPlayerNewCard(playerId, 12) // Player take new cards until max value is reached.
     this.playerDealerRules(playerId) // Decides if player won or dealer is going to play
     Result.results(this._winner, this._players[playerId], this._players[0], this._players[0].hand.length)
 
