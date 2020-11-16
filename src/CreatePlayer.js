@@ -15,10 +15,8 @@ export class CreatePlayer {
    * Create a player.
    *
    * @param {string} playerName - The name of the player.
-   * @param {Array} hand - The name of the player.
-   * @param {number} totVal - the total value of the players cards.
    */
-  constructor (playerName, hand, totVal) {
+  constructor (playerName) {
     this.playerName = playerName
     this.hand = []
     this.totVal = 0

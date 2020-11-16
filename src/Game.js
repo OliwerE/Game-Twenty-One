@@ -13,18 +13,15 @@ import { Result } from './Results.js'
  * Represents the game twenty one
  *
  * @class
+ * @augments CardLogic
  */
 export class Game extends CardLogic {
   /**
    * The game data.
    *
-   * @param {Array} players - The players stored in an array.
-   * @param {Array} deck - The deck used to give players new cards.
-   * @param {Array} deckUsed - An array containing used cards.
-   * @param {number} numberOfPlayers - The amount of players in the current game.
    * @param {number} winner - A number corresponding to a winner.
    */
-  constructor (players, deck, deckUsed, numberOfPlayers, winner) {
+  constructor (winner) {
     super()
     this._players = []
     this._deck = []
