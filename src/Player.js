@@ -10,7 +10,7 @@
  *
  * @class
  */
-export class CreatePlayer {
+export class Player {
   /**
    * Create a player.
    *

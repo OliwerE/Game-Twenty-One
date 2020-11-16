@@ -5,7 +5,7 @@
  * @version 1.0.0
  */
 import { Deck } from './Deck.js'
-import { CreatePlayer } from './CreatePlayer.js'
+import { Player } from './Player.js'
 import { CardLogic } from './CardLogic.js'
 import { Result } from './Results.js'
 
@@ -79,13 +79,13 @@ export class Game extends CardLogic {
       throw new Error('The passed argument is not between 1-7, 20 or 50!')
     }
 
-    this._players.push(new CreatePlayer('Dealer   : '))
+    this._players.push(new Player('Dealer   : '))
 
     // create players + gives first card
     for (let i = 0; i <= this._numberOfPlayers - 1; i++) {
       const PlayerNumber = i + 1
       const createPlayerName = 'Player #' + PlayerNumber + ': '
-      this._players.push(new CreatePlayer(createPlayerName))
+      this._players.push(new Player(createPlayerName))
       this._players[PlayerNumber].hand = this._deck.splice(0, 1) // does not add sum to players totVal until player get second card.
     }
   }
